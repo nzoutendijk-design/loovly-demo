@@ -1,0 +1,156 @@
+/* ------------------------------------------------------------------ page */
+:root {
+  --geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --caveat: 'Caveat', 'Bradley Hand', 'Segoe Script', cursive;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: #000;
+  color: #fff;
+  font-family: var(--geist);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; text-align: inherit; }
+img { display: block; }
+p, h1 { margin: 0; }
+
+/* viewport wrapper: fills the screen, respects the notch / status bar when installed to the Home Screen */
+.viewport {
+  position: fixed; inset: 0;
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  display: flex; align-items: center; justify-content: center;
+}
+.stage-box { position: relative; width: 390px; height: 845px; transform-origin: center; flex: none; }
+.stage { position: absolute; inset: 0; width: 390px; height: 845px; overflow: hidden; background: #000; }
+
+/* desktop: iPhone bezel + hint (outside the design) */
+.viewport.desktop { background: #141414; }
+.viewport.desktop .stage-box { border-radius: 54px; padding: 12px; background: #050505; box-shadow: 0 0 0 1px #2a2a2a, 0 30px 80px rgba(0,0,0,.6); width: 414px; height: 869px; }
+.viewport.desktop .stage { inset: 12px; border-radius: 42px; }
+.hint { position: fixed; left: 0; right: 0; bottom: 14px; text-align: center; font: 400 12px var(--geist); color: rgba(255,255,255,.35); letter-spacing: .3px; pointer-events: none; }
+.hint b { color: rgba(255,255,255,.6); font-weight: 500; }
+
+/* ------------------------------------------------------------------ background */
+.bg { position: absolute; inset: 0; background: #000; overflow: hidden; }
+.bg-img { position: absolute; left: -31px; top: 2px; width: 453px; height: 842px; filter: blur(12.5px); }
+.bg-img img { width: 100%; height: 100%; object-fit: cover; }
+.bg-dim { position: absolute; inset: 0; background: rgba(0,0,0,.4); }
+.bg-soft { position: absolute; inset: 0; background: rgba(255,255,255,.3); mix-blend-mode: soft-light; }
+.bg-dark { position: absolute; inset: 0; background: rgba(0,0,0,.08); }
+
+/* ------------------------------------------------------------------ nav / title / copy */
+.nav { position: absolute; left: 0; top: 0; width: 390px; height: 56px; overflow: hidden; }
+.nav-logo { position: absolute; left: 16.85px; top: 18.25px; width: 62.3px; height: 15px; }
+.burger { position: absolute; left: 353px; width: 20px; height: 1px; background: rgba(255,255,255,.72); }
+.b1 { top: 20.75px; } .b2 { top: 29.75px; }
+
+.title { position: absolute; left: 0; top: 59px; width: 390px; text-align: center; font: 600 22px/29px var(--geist); color: #fff; white-space: nowrap; }
+.desc { position: absolute; left: 59px; top: 467px; width: 272px; text-align: center; font: 400 12px/1.3 var(--geist); color: rgba(255,255,255,.5); }
+.note { position: absolute; text-align: center; font: 400 12px/13px var(--geist); color: rgba(255,255,255,.5); }
+.sheet-heading { position: absolute; font: 500 16px/21px var(--geist); letter-spacing: .1378px; color: #fff; white-space: nowrap; }
+.bottom-gradient { position: absolute; left: 0; top: 716px; width: 390px; height: 129px; background: linear-gradient(180deg, rgba(102,102,102,0) 0%, rgba(0,0,0,.4) 100%); -webkit-backdrop-filter: blur(3.75px); backdrop-filter: blur(3.75px); }
+.close-x { position: absolute; width: 11.06px; height: 11.06px; }
+.close-x::before { content: ''; position: absolute; inset: -14px; } /* touch target */
+.stroke { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); }
+
+/* ------------------------------------------------------------------ card */
+.card { position: absolute; left: 73px; top: 117px; width: 244px; height: 325.74px; border-radius: 16px; background: rgba(0,0,0,.2); overflow: hidden; }
+.card-fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card-img { position: absolute; object-fit: cover; }
+.card-caption { position: absolute; left: 14.04px; top: 292px; font: 700 17.28px/1.2 var(--caveat); color: #fff; white-space: nowrap; }
+.card-pencil { position: absolute; left: 190px; top: 272px; width: 40px; height: 40px; }
+.card-pencil img { position: absolute; }
+
+/* ------------------------------------------------------------------ detail chips */
+.chip-row { position: absolute; left: 0; width: 390px; display: flex; justify-content: center; gap: 8px; }
+.chip { height: 32px; padding: 0 16px; display: flex; align-items: center; gap: 4px; border-radius: 48px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); font: 400 16px/21px var(--geist); color: #fff; white-space: nowrap; }
+
+/* ------------------------------------------------------------------ hostbar */
+.hostbar { position: absolute; left: 0; top: 693px; width: 390px; height: 152px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); overflow: hidden; }
+.host-tab { position: absolute; top: 0; width: 90px; height: 70px; }
+.host-tab img { position: absolute; left: 39px; top: 23px; width: 12px; height: 12px; }
+.host-tab span { position: absolute; left: 0; top: 45px; width: 90px; text-align: center; font: 400 10px/13px var(--geist); letter-spacing: 1.5px; color: #fff; }
+.cta { position: absolute; left: 50%; transform: translateX(calc(-50% + .5px)); height: 48px; padding: 0 32px; display: flex; align-items: center; gap: 8px; border-radius: 32px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); font: 600 18px/20px var(--geist); color: #fff; white-space: nowrap; }
+
+/* tray */
+.tray { position: absolute; left: 0; top: 569px; width: 390px; height: 124px; background: rgba(0,0,0,.08); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
+.tray-label { position: absolute; left: 16px; top: 16px; font: 500 12px/15px var(--geist); color: #fff; }
+.tray-thumbs { position: absolute; left: 18px; top: 621px; display: flex; gap: 10.08px; }
+.thumb { position: relative; width: 48.96px; height: 48.96px; border-radius: 14px; overflow: hidden; flex: none; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 .84px rgba(255,255,255,.7); }
+
+/* ------------------------------------------------------------------ overlay (Figma "Bottom Bars") */
+.overlay { position: absolute; left: 0; top: -17px; width: 390px; height: 862px; overflow: hidden; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.overlay-picker { background: linear-gradient(180deg, rgba(102,102,102,0) 42.575%, rgba(0,0,0,.9) 50%); }
+.overlay-sheet { background: linear-gradient(180deg, rgba(102,102,102,0) 2.204%, rgba(0,0,0,.9) 98.376%); }
+.overlay-calendar { background: linear-gradient(180deg, rgba(102,102,102,0) 2.204%, rgba(0,0,0,.9) 94.2%); }
+
+.tabs { position: absolute; left: 23.59px; top: 127.5px; display: flex; }
+.tab { height: 35.8px; display: flex; align-items: center; justify-content: center; font: 400 16px/21px var(--geist); letter-spacing: .1378px; color: #fff; border-bottom: 1.148px solid rgba(255,255,255,.1); }
+.tab.on { font-weight: 500; border-bottom: 1.2px solid #fff; }
+
+/* image picker grid (frame coords) */
+.grid-row { position: absolute; left: 25px; display: flex; gap: 14px; }
+.box { position: relative; width: 162px; height: 199px; border-radius: 13.98px; background: rgba(136,136,136,.15); box-shadow: inset 0 0 0 1.165px rgba(136,136,136,.15); overflow: hidden; -webkit-backdrop-filter: blur(11.65px); backdrop-filter: blur(11.65px); }
+.box img { position: absolute; object-fit: cover; }
+
+/* type editor (overlay coords) */
+.type-field { position: absolute; left: 24px; top: 304px; width: 341px; height: 39px; border-bottom: .925px solid #fff; }
+.type-field span { position: absolute; left: 4px; top: 10.5px; width: 333px; font: 400 14px/18px var(--geist); letter-spacing: .1378px; color: #fff; }
+.name-field { top: 379px; }
+.chip-strip { position: absolute; left: 24px; top: 361px; width: 366px; height: 32px; display: flex; overflow: hidden; }
+.font-chip { flex: none; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 100px; background: rgba(255,255,255,.3); font: 400 12px/15px var(--geist); letter-spacing: .1378px; color: #fff; }
+.font-chip.on { font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
+.color-chip { flex: none; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center; }
+.color-chip.picker { background: #fff; }
+.color-chip i { display: block; height: 24.89px; border-radius: 8px; }
+.segmented { position: absolute; left: 83px; top: 470px; width: 223.39px; height: 38px; border-radius: 8px; background: rgba(255,255,255,.2); }
+.seg-pill { position: absolute; top: 5.76px; width: 103.35px; height: 26.485px; border-radius: 8px; background: rgba(255,255,255,.3); }
+.seg-label { position: absolute; top: 5.76px; width: 103.35px; height: 26.485px; display: flex; align-items: center; justify-content: center; font: 500 14px/18px var(--geist); letter-spacing: .1587px; color: #fff; }
+.keyboard { position: absolute; left: 0; top: 536px; width: 390px; height: 325.97px; }
+.keyboard img { width: 390px; height: 325.97px; }
+.key-return { position: absolute; left: 295.7px; top: 206px; width: 91.4px; height: 42px; }
+
+/* ------------------------------------------------------------------ photo library */
+.library { position: absolute; left: 0; top: 56px; width: 390px; height: 861.5px; border-radius: 32px; background: #fff; overflow: hidden; display: flex; flex-direction: column; gap: 8.864px; color: #000; }
+.lib-header { height: 70.9px; flex: none; padding: 0 14.18px; display: flex; align-items: center; justify-content: space-between; }
+.lib-round { width: 42.55px; height: 42.55px; border-radius: 50%; background: #fff; box-shadow: 0 0 18.86px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+.lib-check { background: #309eff; box-shadow: 0 0 21.27px rgba(0,0,0,.12); }
+.lib-seg { display: flex; gap: 7.09px; padding: 3.55px; border-radius: 886px; background: #fff; box-shadow: 0 0 18.86px rgba(0,0,0,.12); }
+.lib-seg span { height: 35.45px; padding: 0 14.18px; display: flex; align-items: center; border-radius: 46px; font: 500 12px/16px var(--geist); color: #000; }
+.lib-seg-on { background: #ededed; }
+.lib-grid { display: flex; flex-direction: column; gap: 1.773px; }
+.lib-row { display: flex; gap: 1.773px; }
+.lib-cell { position: relative; flex: 1 0 0; aspect-ratio: 1; overflow: hidden; }
+.lib-cell img { width: 100%; height: 100%; object-fit: cover; }
+.lib-dim { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
+.lib-ck-circle { position: absolute !important; left: 105px; top: 5.23px; width: 19px !important; height: 19px !important; }
+.lib-ck { position: absolute !important; left: 108px; top: 8.23px; width: 14px !important; height: 14px !important; }
+
+/* ------------------------------------------------------------------ occasion sheet */
+.occasions { position: absolute; left: 35px; top: 597.6px; width: 319px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.occ-row { display: flex; align-items: center; }
+.occ-chip { flex: none; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 114.83px; box-shadow: inset 0 0 0 1.148px rgba(255,255,255,.2); font: 400 12px/15px var(--geist); letter-spacing: .1378px; color: #fff; white-space: nowrap; }
+.occ-chip.on { font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+.occ-chip.selected { font-weight: 500; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
+
+/* ------------------------------------------------------------------ calendar */
+.calendar { position: absolute; left: 23px; top: 467px; width: 344px; display: flex; flex-direction: column; gap: 12px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; }
+.cal-month { display: flex; align-items: center; font: 600 20px/24px var(--geist); letter-spacing: -.4px; color: #fff; }
+.cal-year { font: 600 16px/20px var(--geist); letter-spacing: -.32px; color: #fff; }
+.cal-line { height: 1px; background: rgba(255,255,255,.08); margin-top: -12px; }
+.cal-body { display: flex; flex-direction: column; }
+.cal-body .cal-row:first-child { margin-bottom: 12px; }
+.cal-row { display: flex; gap: 1.787px; }
+.cal-cell { flex: 1 0 0; height: 33.67px; display: flex; align-items: center; justify-content: center; border-radius: 16px; font: 400 12px/15px var(--geist); color: #fff; }
+.cal-wd { font-weight: 600; color: rgba(255,255,255,.4); }
+.cal-cell.sel { background: #fff; color: #000; }
