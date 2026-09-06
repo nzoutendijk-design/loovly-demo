@@ -13,14 +13,14 @@ let css = readFileSync(join(dist, 'fonts/fonts.css'), 'utf8')
 css = css.replace(/url\('\/fonts\/([^']+)'\)/g, (_, f) => `url('${dataUri(join(dist, 'fonts', f))}')`)
 for (const f of readdirSync(join(dist, 'assets')).filter((f) => f.endsWith('.css'))) css += readFileSync(join(dist, 'assets', f), 'utf8')
 html = html.replace(/<link rel="stylesheet"[^>]*fonts\/fonts\.css[^>]*>/, '').replace(/<link rel="stylesheet"[^>]*assets\/[^>]*\.css[^>]*>/, '')
-html = html.replace('</head>', `<style>${css}</style></head>`)
+html = html.replace('</head>', () => `<style>${css}</style></head>`) // replacer fn: '$&' etc. in the payload must stay literal
 
 // JS (with image paths inlined)
 let js = ''
 for (const f of readdirSync(join(dist, 'assets')).filter((f) => f.endsWith('.js'))) js += readFileSync(join(dist, 'assets', f), 'utf8')
 const images = readdirSync(join(dist, 'assets')).filter((f) => /\.(png|jpg|svg)$/.test(f))
 for (const img of images) js = js.split(`./assets/${img}`).join(dataUri(join(dist, 'assets', img)))
-html = html.replace(/<script type="module"[^>]*><\/script>/, '').replace('</body>', `<script type="module">${js}</script></body>`)
+html = html.replace(/<script type="module"[^>]*><\/script>/, '').replace('</body>', () => `<script type="module">${js}</script></body>`)
 
 writeFileSync(join(dist, 'loovly-demo.html'), html)
 console.log(`dist/loovly-demo.html — ${(html.length / 1e6).toFixed(1)} MB`)
