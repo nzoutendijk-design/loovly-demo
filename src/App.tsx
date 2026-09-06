@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { SCREENS } from './screens'
 import type { Navigate } from './screens'
+import { asset } from './components'
 
 const N = SCREENS.length
 const W = 390
@@ -68,7 +69,7 @@ export default function App() {
 
   // warm the image cache so screen changes don't flash
   useEffect(() => {
-    ASSETS.forEach((a) => { const i = new Image(); i.src = `./assets/${a}` })
+    ASSETS.forEach((a) => { const i = new Image(); i.src = asset(a) })
   }, [])
 
   const screen = SCREENS[idx - 1]

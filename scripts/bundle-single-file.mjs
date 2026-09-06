@@ -15,12 +15,14 @@ for (const f of readdirSync(join(dist, 'assets')).filter((f) => f.endsWith('.css
 html = html.replace(/<link rel="stylesheet"[^>]*fonts\/fonts\.css[^>]*>/, '').replace(/<link rel="stylesheet"[^>]*assets\/[^>]*\.css[^>]*>/, '')
 html = html.replace('</head>', () => `<style>${css}</style></head>`) // replacer fn: '$&' etc. in the payload must stay literal
 
-// JS (with image paths inlined)
+// JS, preceded by a map of every image as a data: URI (read by asset() in src/components.tsx)
 let js = ''
 for (const f of readdirSync(join(dist, 'assets')).filter((f) => f.endsWith('.js'))) js += readFileSync(join(dist, 'assets', f), 'utf8')
 const images = readdirSync(join(dist, 'assets')).filter((f) => /\.(png|jpg|svg)$/.test(f))
-for (const img of images) js = js.split(`./assets/${img}`).join(dataUri(join(dist, 'assets', img)))
-html = html.replace(/<script type="module"[^>]*><\/script>/, '').replace('</body>', () => `<script type="module">${js}</script></body>`)
+const map = Object.fromEntries(images.map((img) => [img, dataUri(join(dist, 'assets', img))]))
+html = html
+  .replace(/<script type="module"[^>]*><\/script>/, '')
+  .replace('</body>', () => `<script>window.__INLINE_ASSETS__=${JSON.stringify(map)}</script><script type="module">${js}</script></body>`)
 
 writeFileSync(join(dist, 'loovly-demo.html'), html)
 console.log(`dist/loovly-demo.html — ${(html.length / 1e6).toFixed(1)} MB`)

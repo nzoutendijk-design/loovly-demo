@@ -4,7 +4,10 @@
  */
 import type { CSSProperties, ReactNode } from 'react'
 
-const A = (name: string) => `./assets/${name}`
+/** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
+declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
+export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? `./assets/${name}`
+const A = asset
 
 /* ----------------------------------------------------------------- base */
 
