@@ -6,6 +6,8 @@ Each screen is rebuilt in HTML/CSS at the design’s native 390 × 845 pt and sc
 whatever device opens it. Tapping the natural control on each screen advances to the next one —
 see [docs/NAVIGATION.md](docs/NAVIGATION.md) for the full flow.
 
+**Live demo:** https://nzoutendijk-design.github.io/loovly-demo/ (open on an iPhone → Share → *Add to Home Screen* for full-screen).
+
 No design changes were made; no features beyond click-through navigation were added.
 
 ## Stack
@@ -34,6 +36,10 @@ npm run bundle       # dist/loovly-demo.html — a single self-contained file (a
 
 `dist/` uses relative paths, so it works from a sub-folder (GitHub Pages, Netlify, S3, a shared
 folder…). `dist/loovly-demo.html` can be e-mailed or opened directly from Files on an iPhone.
+
+```bash
+npm run deploy       # build + push dist/ to the gh-pages branch → GitHub Pages
+```
 
 ## Viewing on an iPhone
 
@@ -68,6 +74,7 @@ docs/
   NAVIGATION.md    screen-by-screen flow and hotspot map
 scripts/
   bundle-single-file.mjs   builds dist/loovly-demo.html
+  deploy-pages.sh          publishes dist/ to GitHub Pages
 ```
 
 Every screen element carries `data-screen` / `data-figma-node` attributes so any screen can be
