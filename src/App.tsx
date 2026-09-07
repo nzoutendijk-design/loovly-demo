@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { Screen } from './Screen'
 import { asset } from './components'
-import { PRESETS, initial, matchPreset, reduce } from './state'
+import { PHOTOS, PRESETS, initial, matchPreset, reduce } from './state'
 
 const N = PRESETS.length
 const W = 390
@@ -15,7 +15,7 @@ function readHash() {
 const ASSETS = [
   'bg-backrooms.jpg', 'card-cat.jpg', 'card-cake.jpg', 'card-photo.jpg', 'card-sled.jpg', 'card-sausage.jpg', 'card-barbie.jpg', 'card-help.jpg',
   'keyboard@3x.png', 'vibe-1.jpg', 'vibe-2.jpg', 'vibe-3.jpg', 'vibe-4.jpg', 'vibe-5.jpg',
-  ...Array.from({ length: 18 }, (_, i) => `photo-${String(i + 1).padStart(2, '0')}.jpg`), 'photo-08a.jpg', 'photo-08b.jpg',
+  ...PHOTOS, 'photo-08a.jpg',
 ]
 
 export default function App() {
