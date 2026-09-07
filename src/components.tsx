@@ -269,16 +269,22 @@ export function Tray({ tab, theme, effect, onTheme, onEffect }: {
   return (
     <motion.div className="layer layer-tray" {...slideUp(124)}>
       <div className="tray" />
-      <AnimatePresence initial={false}>
-        <motion.div className="layer layer-tray-body" key={tab} initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2, delay: 0.08 } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
-          <span className="tray-label">{tab === 'vibe' ? 'Vibe' : 'Animations'}</span>
-          {tab === 'vibe' ? (
-            <ThemeTrayBody selected={theme} onSelect={onTheme} />
-          ) : (
-            <TrayStrip items={EFFECTS.map((e) => ({ id: e.id, label: e.name, glyph: e.glyph }))} selected={effect} onSelect={onEffect} />
-          )}
-        </motion.div>
-      </AnimatePresence>
+      {/* both bodies stay mounted; only opacity changes, so the shell's slide is the only exit animation */}
+      {(['vibe', 'animations'] as const).map((t) => {
+        const on = t === tab
+        return (
+          <motion.div className="layer layer-tray-body" key={t} initial={false}
+            animate={{ opacity: on ? 1 : 0, transitionEnd: { visibility: on ? 'visible' : 'hidden' } }}
+            transition={{ duration: 0.2, delay: on ? 0.06 : 0 }}>
+            <span className="tray-label">{t === 'vibe' ? 'Vibe' : 'Animations'}</span>
+            {t === 'vibe' ? (
+              <ThemeTrayBody selected={theme} onSelect={onTheme} />
+            ) : (
+              <TrayStrip items={EFFECTS.map((e) => ({ id: e.id, label: e.name, glyph: e.glyph }))} selected={effect} onSelect={onEffect} />
+            )}
+          </motion.div>
+        )
+      })}
     </motion.div>
   )
 }
