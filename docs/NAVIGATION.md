@@ -1,66 +1,74 @@
 # Navigation
 
-The demo is **state-driven**, not a fixed sequence. One card state (image, caption, font, colour,
-occasion, recipient, date, vibe, animation, and which sheet is open) is rendered as the current
-screen, and every control changes that state from wherever you are:
+The demo is **state-driven**: one card state (image, caption, font, colour, occasion, recipient,
+date, format, prompt, vibe, animation, delivery, destination, first name, and which sheet is open)
+is rendered as the current screen. Every control changes that state from wherever you are.
+
+## The creator story (Figma section “5 · Create-flow forms”)
+
+```
+01 The campaign ─ Learn more ─▶ 02 The landing ─ Make one ─▶ 03 Create your card
+     ▲                                                              │ Done
+     └──────────────────────── the room (13) ◀─ Start asking people ─┘─▶ 07 Digital, or the Card
+                                   ▲                                      │ Continue
+                                   │ (digital only)                       ▼
+                                   └──────────────────────── 08 Create account ─ Text me a code
+                                                                          │ (the Loovly Card)
+                                              11 It’s on its way ◀─ 10 Pay ◀─ 09 Where does their card go?
+```
 
 | Control | Does |
 |---|---|
-| Pencil on the card | opens the Image / Type picker |
-| Image tab · a tile | puts that illustration on the card |
-| Upload | opens the photo library; tap a photo, then ✓ puts it on the card |
-| Type tab · the field | enters the caption (staged as “Happy Birthday” until the real keyboard lands) |
-| Font chips · colour swatches · eyedropper | select a font, recolour the caption |
-| Occasion / Who’s it for / When is it chips | open their sheet; the chip shows what you picked |
-| Any occasion · the name field · any day | set the value; ✕ or return closes the sheet |
-| VIBE / ANIMATIONS tabs | open (or close) their tray from any card screen; thumbnails select |
-| Done | closes an open tray; otherwise starts a fresh card |
+| Pencil on the card | opens the Type / Image editor (Type tab first, as designed) |
+| Type field · font chips · swatches · eyedropper | real typing; the caption lands on the card as you type |
+| Image tab | opens the photo library; tap a photo, then ✓ puts it on the card |
+| Occasion / Who’s it for / When is it / Format Type / Choose Prompt | open their sheet; the chip shows what you picked |
+| Any occasion · the name field · any day · a format · a prompt | set the value; ✕ or return closes the sheet |
+| August ▾ | opens a month grid; the calendar and the chip follow the chosen month |
+| Your own ask | real typing; the sheet lifts while the keyboard is up |
+| VIBE / ANIMATIONS tabs | open (or close) their tray; thumbnails select |
+| Done | continues to the digital-versus-printed fork |
+| Fork cards · destination rows | select; Continue moves on |
+| First name · Text me a code | real typing; goes to the address step (printed) or straight to the room (digital) |
+| Pay with Apple Pay · Start asking people | continue to “It’s on its way” and the room |
+| Pencil on the room card | back to the editor |
 
-The **22 designed frames** below are presets of that state. `#n` in the URL, ←/→ keys and swiping
-step through them in Figma canvas order, so the intended sequence can still be presented. Once you
-tap anything that leaves the sequence the caption reads “free navigation”; ←/→ jump back in.
+The **40 designed frames** are presets of that state. `#n` in the URL, ←/→ keys and swiping step
+through them in canvas order (top row, then bottom row), so the intended sequence can still be
+presented. Off the sequence the caption reads “free navigation”; ←/→ jump back in.
 
-| # | Screen | Figma node | Tap to go forward | Other links |
-|---|---|---|---|---|
-| 1 | Create your card — empty (cat card) | `1:879` | pencil on the card | |
-| 2 | Image picker | `1:1212` | top-left tile (cake) | **Upload** → 4 · **Type** tab → 6 · ✕ → 1 |
-| 3 | Create your card — cake card | `1:970` | pencil on the card | |
-| 4 | Photo library | `1:1062` | first photo | blue ✓ → 6 · ✕ → 3 |
-| 5 | Photo library — photo selected | `1:1135` | blue ✓ | ✕ → 3 |
-| 6 | Type — empty field | `1:1427` | the **Enter** field | **Image** tab → 2 · **Color** → 8 · ✕ → 5 |
-| 7 | Type — “Happy Birthday” | `1:1486` | **Color** segment | ✕ → 6 |
-| 8 | Type — color picker | `1:1545` | ✕ or the **return** key | **Aa** → 7 |
-| 9 | Create your card — photo card | `1:2260` | **Occasion** chip | |
-| 10 | Occasion sheet | `1:3012` | **Birthday** chip | ✕ → 9 |
-| 11 | Occasion sheet — Birthday selected | `1:2902` | ✕ (or Birthday again) | |
-| 12 | Create your card — Birthday set | `1:2349` | **Who’s it for** chip | |
-| 13 | Recipient sheet — empty field | `1:1610` | the **Enter** field | return → 15 · ✕ → 12 |
-| 14 | Recipient sheet — “Emily” | `1:1744` | **return** key or ✕ | |
-| 15 | Create your card — Emily set | `1:2438` | **When is it** chip | |
-| 16 | Calendar — 27 Aug | `1:1878` | day **28** | ✕ → 15 |
-| 17 | Calendar — 28 Aug | `1:2069` | ✕ (or any day) | |
-| 18 | Create your card — 28 Aug set | `1:2528` | **VIBE** tab | ANIMATIONS → 21 |
-| 19 | Vibe tray | `1:2617` | first vibe thumbnail | Done → 20 · ANIMATIONS → 21 |
-| 20 | Create your card — vibe chosen | `1:2724` | **ANIMATIONS** tab | VIBE → 19 |
-| 21 | Animations tray | `1:825` | first animation thumbnail | Done → 22 · VIBE → 19 |
-| 22 | Create your card — complete | `1:2813` | **Done** → restarts at 1 | VIBE → 19 · ANIMATIONS → 21 |
+| # | Frame | Figma node | # | Frame | Figma node |
+|---|---|---|---|---|---|
+| 1 | The campaign | `12:1121` | 21 | Create your card | `12:3207` |
+| 2 | The landing | `12:1151` | 22 | Animations tray | `12:3435` |
+| 3 | Create your card — empty | `12:1166` | 23 | Create your card | `12:3297` |
+| 4 | Type editor — empty | `12:1847` | 24 | Format — Montage | `12:1411` |
+| 5 | Photo library | `12:1259` | 25 | Format — Slideshow | `12:1483` |
+| 6 | Photo library — selected | `12:1332` | 26 | Format — Prompted | `12:1557` |
+| 7 | Type editor — photo, empty | `12:1900` | 27 | Format — Story | `12:1636` |
+| 8 | Type editor — “Happy Birthday” | `12:1959` | 28 | Create your card — format set | `12:3387` |
+| 9 | Type editor — colour | `12:2018` | 29 | Prompt sheet | `12:1714` |
+| 10 | Create your card — photo | `12:2737` | 30 | Prompt sheet — FUNNY open | `12:1758` |
+| 11 | Occasion sheet | `12:3657` | 31 | Prompt sheet — typing | `12:1804` |
+| 12 | Occasion sheet — Birthday | `12:3547` | 32 | Create your card — complete | `12:3411` |
+| 13 | Create your card — Birthday set | `12:2828` | 33 | Digital, or the Card | `12:3846` |
+| 14 | Recipient sheet — empty | `12:2083` | 34 | Digital, or the Card — digital | `12:3767` |
+| 15 | Recipient sheet — Emily | `12:2217` | 35 | Create account | `12:3867` |
+| 16 | Create your card — Emily set | `12:2918` | 36 | Where does their card go? | `12:3787` |
+| 17 | Calendar | `12:2353` | 37 | Where — To them | `12:3801` |
+| 18 | Calendar — 28 Aug | `12:2544` | 38 | Pay | `12:3817` |
+| 19 | Create your card — date set | `12:3009` | 39 | It’s on its way | `12:3830` |
+| 20 | Vibe tray | `12:3099` | 40 | The room — invites are out | `12:3879` |
 
-Deep-link to any preset with `#n`, e.g. `…/#16` opens the calendar.
+## Motion
 
-## Notes for the designer
+- Pages push in from the right (36 ms curve `0.32, 0.72, 0, 1`); the card, copy, chips and hostbar ease
+  in on arrival with a 70 ms stagger.
+- Sheets: the layer underneath dims and blurs while the sheet content rises from the bottom; the
+  keyboard and photo library slide up as their own layers. Nothing cross-fades through anything.
+- Reduce Motion is honoured (instant switches).
 
-- The calendar note computes the real star sign for the chosen day (Leo to 22 Aug, Virgo after),
-  so 28 Aug reads “Virgo energy”, not the frame’s “Leo energy”. Easy to pin back to the frame’s copy.
-- Frame 6 shows the “happy birthday” caption on the card before any text is entered; the state model
-  shows the caption once text exists, so preset 6 renders without it.
-- Frame 5 selects one library photo but frame 6 shows a different photo on the card; the demo pairs
-  that first library photo with the card image from the frames so the designed sequence still holds.
+## Not in the file yet (drawn by me, see DESIGN-NOTES.md)
 
-- Screens 13–14 (recipient name) reuse the heading “What occasion is this card for?” from the
-  occasion sheet. Reproduced as designed; probably intended to read “Who is this card for?”.
-- Screens 10–11 are the only photo-card screens without the “happy birthday” caption on the card
-  (it is under the sheet and blurred, so this is barely visible). Reproduced as designed.
-- The font/colour strips, the vibe/animation tray and the photo library scroll (the frames clip
-  them at the edge). Scrolling never triggers the screen-swipe gesture.
-- The iOS keyboard is the Figma **Keyboard – iPhone** component exported at 3×, since it is a
-  system component and SF Pro isn’t available outside Apple platforms.
+Month grid in the calendar · expanded/collapsed ask-wall sections · typing states of every field ·
+selected states for fork cards and destination rows · the digital-only path skipping the address step.

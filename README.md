@@ -1,11 +1,14 @@
 # Loovly — “Create your card” click-through demo
 
-A pixel-faithful, clickable web reproduction of the 22 iPhone frames in the Figma file
-[Loovly-test › Create Card](https://www.figma.com/design/GQApxxZ9dQvh453nfbF7gR/Loovly-test?node-id=1-824).
+A pixel-faithful, working web build of the creator story in the Figma file
+[Loovly-test › 5 · Create-flow forms](https://www.figma.com/design/GQApxxZ9dQvh453nfbF7gR/Loovly-test?node-id=12-1120):
+campaign → landing → create your card (image, caption, occasion, recipient, date, format, prompt,
+vibe, animations) → digital or printed → account → address → pay → on its way → the room.
 Each screen is rebuilt in HTML/CSS at the design’s native 390 × 845 pt and scaled to fit
 whatever device opens it. The demo is state-driven: every control changes the card state from
-wherever you are (VIBE on the first screen opens the vibe tray over that card), and the 22 designed
-frames remain reachable as presets — see [docs/NAVIGATION.md](docs/NAVIGATION.md).
+wherever you are, text fields are real, and the 40 designed frames remain reachable as presets —
+see [docs/NAVIGATION.md](docs/NAVIGATION.md). Gaps and decisions found on the way are tracked in
+[docs/DESIGN-NOTES.md](docs/DESIGN-NOTES.md).
 
 **Live demo:** https://nzoutendijk-design.github.io/loovly-demo/ (open on an iPhone → Share → *Add to Home Screen* for full-screen).
 
@@ -54,7 +57,7 @@ it full-screen (no Safari chrome, status-bar-safe), which is the closest match t
 | Tap any control | changes the card state (opens a sheet, sets a value, closes it…) |
 | Swipe left / right | previous / next designed frame |
 | ← / → keys (desktop) | previous / next designed frame |
-| `#n` in the URL | jump straight to designed frame *n* (1–22) |
+| `#n` in the URL | jump straight to designed frame *n* (1–40) |
 
 Every control has a hover state (pointer devices) and a pressed state (all devices). The Figma file
 defines neither, so they follow its glass style: lighter fill and brighter stroke on hover, a 95 % scale
@@ -68,15 +71,18 @@ screen, its name and what to tap.
 ```
 src/
   App.tsx          stage scaling, preset routing (#n), swipe + keyboard stepping
-  state.ts         the card state, reducer, and the 22 designed frames as presets
-  Screen.tsx       renders the current state as one frame and wires every control
+  state.ts         the card state, reducer, and the 40 designed frames as presets
+  Screen.tsx       the shared background, page transitions, and the create screen with its sheets
+  pages.tsx        campaign, landing, fork, account, where, pay, on its way, the room
+  motion.ts        timing and easing presets
   components.tsx   shared pieces: background, nav, card, chips, hostbar, overlays, sheets…
   styles.css       all styling, in Figma frame units
 public/
   assets/          exported Figma assets
   fonts/           Geist + Caveat (woff2; @font-face lives in src/styles.css)
 docs/
-  NAVIGATION.md    screen-by-screen flow and hotspot map
+  NAVIGATION.md    flow, control map, preset table
+  DESIGN-NOTES.md  running list of design-system gaps and decisions
 scripts/
   bundle-single-file.mjs   builds dist/loovly-demo.html
   deploy-pages.sh          publishes dist/ to GitHub Pages

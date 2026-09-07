@@ -1,23 +1,20 @@
 /**
- * Shared UI pieces for the Loovly "Create your card" demo.
- * Every coordinate is in Figma frame units (390 × 845). The stage is scaled by App.
+ * Shared UI pieces for the Loovly creator demo. Coordinates are Figma frame units (390 × 845);
+ * sheet contents use the "Bottom Bars" overlay space (origin 18 px above the frame).
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PHOTOS } from './state'
-import { fade, rise, slideUp } from './motion'
+import { ASK_WALL, FORMATS, MONTHS, MONTHS_SHORT, PHOTOS, daysIn, firstWeekday } from './state'
+import type { Format } from './state'
+import { dim, fade, sheet, slideUp } from './motion'
 
 /** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
 declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
 export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? `./assets/${name}`
 const A = asset
 
-/**
- * Mouse drag-to-scroll for horizontal strips (touch scrolls natively). Accounts for the
- * CSS scale of the stage, maps a plain vertical wheel to sideways scrolling, and suppresses
- * the click that would otherwise fire after a drag.
- */
+/** Mouse drag-to-scroll for horizontal strips (touch scrolls natively); wheel scrolls sideways. */
 function useDragScroll() {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -25,33 +22,19 @@ function useDragScroll() {
     if (!el) return
     let dragging = false, moved = false, startX = 0, startLeft = 0
     const scale = () => el.getBoundingClientRect().width / el.offsetWidth || 1
-    const down = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return
-      dragging = true; moved = false; startX = e.clientX; startLeft = el.scrollLeft
-    }
-    const move = (e: PointerEvent) => {
-      if (!dragging) return
-      const dx = (e.clientX - startX) / scale()
-      if (Math.abs(dx) > 4) moved = true
-      el.scrollLeft = startLeft - dx
-    }
+    const down = (e: PointerEvent) => { if (e.pointerType !== 'mouse') return; dragging = true; moved = false; startX = e.clientX; startLeft = el.scrollLeft }
+    const move = (e: PointerEvent) => { if (!dragging) return; const dx = (e.clientX - startX) / scale(); if (Math.abs(dx) > 4) moved = true; el.scrollLeft = startLeft - dx }
     const up = () => { dragging = false }
     const click = (e: MouseEvent) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false } }
-    const wheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return
-      el.scrollLeft += e.deltaY
-      e.preventDefault()
-    }
+    const wheel = (e: WheelEvent) => { if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; el.scrollLeft += e.deltaY; e.preventDefault() }
     el.addEventListener('wheel', wheel, { passive: false })
     el.addEventListener('pointerdown', down)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
     el.addEventListener('click', click, true)
     return () => {
-      el.removeEventListener('wheel', wheel)
-      el.removeEventListener('pointerdown', down)
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
+      el.removeEventListener('wheel', wheel); el.removeEventListener('pointerdown', down)
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up)
       el.removeEventListener('click', click, true)
     }
   }, [])
@@ -60,13 +43,11 @@ function useDragScroll() {
 
 /* ----------------------------------------------------------------- base */
 
-export function Background() {
+export function Background({ dark }: { dark?: boolean }) {
+  if (dark) return <div className="bg" />
   return (
     <div className="bg">
-      <div className="bg-img">
-        <img src={A('bg-backrooms.jpg')} alt="" />
-        <div className="bg-dim" />
-      </div>
+      <div className="bg-img"><img src={A('bg-light.jpg')} alt="" /></div>
       <div className="bg-soft" />
       <div className="bg-dark" />
     </div>
@@ -85,21 +66,16 @@ export function Nav() {
   )
 }
 
-export function Title() {
-  return <h1 className="title">Create your card</h1>
+export function Title({ children = 'Create your card' }: { children?: ReactNode }) {
+  return <h1 className="title">{children}</h1>
 }
 
 export function Description() {
-  return (
-    <p className="desc">
-      Choose who it’s for, what the occasion is, when it’s happening, and how you’d like to create it.
-    </p>
-  )
+  return <p className="desc">Choose who it’s for, what the occasion is, when it’s happening, and how you’d like to create it.</p>
 }
 
-export function BottomGradient() {
-  return <motion.div className="bottom-gradient" {...fade} />
-}
+export function TopGradient() { return <div className="top-gradient" /> }
+export function BottomGradient() { return <motion.div className="bottom-gradient" {...fade} /> }
 
 export function CloseX({ x, y, onClick }: { x: number; y: number; onClick?: () => void }) {
   return (
@@ -111,18 +87,52 @@ export function CloseX({ x, y, onClick }: { x: number; y: number; onClick?: () =
   )
 }
 
+/** ds/cta — Primary glass button, centred unless `left` is given */
+export function Cta({ children, onClick, top, left, width, disabled }: { children: ReactNode; onClick?: () => void; top: number; left?: number; width?: number; disabled?: boolean }) {
+  const style: CSSProperties = { top, width }
+  if (left !== undefined) { style.left = left; style.transform = 'none' }
+  return (
+    <button className={'cta' + (disabled ? ' disabled' : '')} style={style} onClick={disabled ? undefined : onClick} aria-disabled={disabled}>
+      {children}
+    </button>
+  )
+}
+
+/** Plain text input styled as the design's underlined field. Enter blurs and submits. */
+export function TextInput({ value, onChange, placeholder, onSubmit, onFocus, onBlur, className = '', autoFocus, style }: {
+  value: string; onChange: (v: string) => void; placeholder?: string; onSubmit?: () => void; onFocus?: () => void; onBlur?: () => void
+  className?: string; autoFocus?: boolean; style?: CSSProperties
+}) {
+  return (
+    <input
+      className={'ti ' + className}
+      style={style}
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); onSubmit?.() } }}
+      autoFocus={autoFocus}
+      autoComplete="off"
+      autoCorrect="off"
+      spellCheck={false}
+      enterKeyHint="done"
+    />
+  )
+}
+
 /* ----------------------------------------------------------------- card */
 
-// the two illustration cards use the exact crops from the Figma file; anything else fills the card
 const CROPS: Record<string, CSSProperties> = {
   'card-cat.jpg': { left: -15, top: -21, width: 273, height: 380 },
   'card-cake.jpg': { left: -7, top: -13, width: 251, height: 353 },
 }
 
-export function Card({ src, caption, color, onPencil }: { src: string; caption?: string; color?: string; onPencil?: () => void }) {
+export function Card({ src, caption, color, onPencil, top = 117, className = '' }: { src: string; caption?: string; color?: string; onPencil?: () => void; top?: number; className?: string }) {
   const crop = CROPS[src]
   return (
-    <div className="card">
+    <div className={'card ' + className} style={{ top }}>
       <AnimatePresence initial={false}>
         {crop ? (
           <motion.img key={src} className="card-img" style={crop} src={A(src)} alt="" {...fade} />
@@ -147,8 +157,9 @@ export function Card({ src, caption, color, onPencil }: { src: string; caption?:
 export type ChipKey = 'occasion' | 'who' | 'when' | 'format' | 'prompt'
 type Chip = { icon: string; w: number; h: number; label: string; key: ChipKey }
 
-export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
-  occasion: string | null; who: string | null; when: string | null; onChip?: (key: ChipKey) => void; rowsVisible?: number
+export function DetailChips({ occasion, who, when, format, prompt, onChip, rowsVisible = 3 }: {
+  occasion: string | null; who: string | null; when: string | null; format: string | null; prompt: string | null
+  onChip?: (key: ChipKey) => void; rowsVisible?: number
 }) {
   const all: Chip[][] = [
     [
@@ -157,27 +168,25 @@ export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
     ],
     [
       { icon: 'icon-calendar.svg', w: 10.53, h: 11, key: 'when', label: when ?? 'When is it' },
-      { icon: 'icon-format.svg', w: 12, h: 10, key: 'format', label: 'Format Type' },
+      { icon: 'icon-format.svg', w: 12, h: 10, key: 'format', label: format ?? 'Format Type' },
     ],
-    [{ icon: 'icon-chat.svg', w: 11, h: 11, key: 'prompt', label: 'Choose Prompt' }],
+    [{ icon: 'icon-chat.svg', w: 11, h: 11, key: 'prompt', label: prompt ?? 'Choose Prompt' }],
   ]
   const rows = all.slice(0, rowsVisible)
-  const tops = [531, 571, 611]
+  const tops = [530, 571, 613]
   return (
-    <>
-      <AnimatePresence initial={false}>
-        {rows.map((row, i) => (
-          <motion.div className="chip-row" style={{ top: tops[i] }} key={i} {...fade}>
-            {row.map((c) => (
-              <button className="chip" key={c.key} onClick={onChip ? () => onChip(c.key) : undefined}>
-                <img src={A(c.icon)} alt="" style={{ width: c.w, height: c.h }} />
-                <motion.span key={c.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>{c.label}</motion.span>
-              </button>
-            ))}
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </>
+    <AnimatePresence initial={false}>
+      {rows.map((row, i) => (
+        <motion.div className="chip-row" style={{ top: tops[i] }} key={i} {...fade}>
+          {row.map((c) => (
+            <button className="chip" key={c.key} onClick={onChip ? () => onChip(c.key) : undefined}>
+              <img src={A(c.icon)} alt="" style={{ width: c.w, height: c.h }} />
+              <motion.span key={c.label} className="chip-label" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>{c.label}</motion.span>
+            </button>
+          ))}
+        </motion.div>
+      ))}
+    </AnimatePresence>
   )
 }
 
@@ -186,21 +195,10 @@ export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
 export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: () => void; onAnimations?: () => void; onSetting?: () => void; onDone?: () => void }) {
   return (
     <motion.div className="hostbar" {...fade}>
-      <button className="host-tab" style={{ left: 28 }} onClick={onVibe}>
-        <img src={A('icon-vibe.svg')} alt="" />
-        <span>VIBE</span>
-      </button>
-      <button className="host-tab" style={{ left: 150 }} onClick={onAnimations}>
-        <img src={A('icon-animations.svg')} alt="" />
-        <span>ANIMATIONS</span>
-      </button>
-      <button className="host-tab" style={{ left: 272 }} onClick={onSetting}>
-        <img src={A('icon-setting.svg')} alt="" />
-        <span>SETTING</span>
-      </button>
-      <button className="cta" style={{ top: 81 }} onClick={onDone}>
-        Done
-      </button>
+      <button className="host-tab" style={{ left: 28 }} onClick={onVibe}><img src={A('icon-vibe.svg')} alt="" /><span>VIBE</span></button>
+      <button className="host-tab" style={{ left: 150 }} onClick={onAnimations}><img src={A('icon-animations.svg')} alt="" /><span>ANIMATIONS</span></button>
+      <button className="host-tab" style={{ left: 272 }} onClick={onSetting}><img src={A('icon-setting.svg')} alt="" /><span>SETTING</span></button>
+      <button className="cta" style={{ top: 81 }} onClick={onDone}>Done</button>
     </motion.div>
   )
 }
@@ -227,70 +225,25 @@ export function Tray({ label, selected, onSelect }: { label: string; selected: n
   )
 }
 
-/* ----------------------------------------------------------------- blurred "Bottom Bars" overlay */
+/* ----------------------------------------------------------------- blurred "Bottom Bars" sheet */
 
-export function Overlay({ kind, children }: { kind: 'picker' | 'sheet' | 'calendar'; children?: ReactNode }) {
+export type OverlayKind = 'picker' | 'sheet' | 'calendar' | 'format'
+
+/** Backdrop dims + blurs the layer underneath while the content rises from the bottom. */
+export function Overlay({ kind, children }: { kind: OverlayKind; children?: ReactNode }) {
   return (
-    <motion.div className={'overlay overlay-' + kind} {...fade}>
-      <motion.div className="sheet-content" {...rise}>{children}</motion.div>
+    <motion.div className={'overlay overlay-' + kind} {...dim}>
+      <motion.div className="sheet-content" {...sheet}>{children}</motion.div>
     </motion.div>
   )
 }
 
-export function Tabs({ active, onImage, onType }: { active: 'image' | 'type'; onImage?: () => void; onType?: () => void }) {
+export function Tabs({ active, onType, onImage }: { active: 'type' | 'image'; onType?: () => void; onImage?: () => void }) {
   return (
     <div className="tabs">
-      <button className={'tab' + (active === 'image' ? ' on' : '')} style={{ width: active === 'image' ? 168 : 174 }} onClick={onImage}>
-        Image
-      </button>
-      <button className={'tab' + (active === 'type' ? ' on' : '')} style={{ width: active === 'type' ? 168 : 174 }} onClick={onType}>
-        Type
-      </button>
+      <button className={'tab' + (active === 'type' ? ' on' : '')} style={{ width: 168 }} onClick={onType}>Type</button>
+      <button className={'tab' + (active === 'image' ? ' on' : '')} style={{ width: 174 }} onClick={onImage}>Image</button>
     </div>
-  )
-}
-
-/* ----------------------------------------------------------------- image picker grid */
-
-type Box = { src: string; l: number; t: number; w: number; h: number }
-const GRID: Box[][] = [
-  [
-    { src: 'card-cake.jpg', l: -9.16, t: -1.17, w: 177, h: 248 },
-    { src: 'card-sled.jpg', l: -3.17, t: -1.17, w: 164, h: 206 },
-  ],
-  [
-    { src: 'card-cat.jpg', l: -9.16, t: -22.16, w: 177, h: 246 },
-    { src: 'card-sausage.jpg', l: -3.17, t: -1.17, w: 164, h: 206 },
-  ],
-  [
-    { src: 'card-barbie.jpg', l: -1.17, t: -11.16, w: 161, h: 224 },
-    { src: 'card-help.jpg', l: -3.17, t: -1.17, w: 164, h: 206 },
-  ],
-]
-
-export function ImageGrid({ onPick }: { onPick?: (src: string) => void }) {
-  const tops = [176, 391, 606]
-  return (
-    <>
-      {GRID.map((row, r) => (
-        <div className="grid-row" style={{ top: tops[r] }} key={r}>
-          {row.map((b) => (
-            <button className="box" key={b.src} onClick={onPick ? () => onPick(b.src) : undefined}>
-              <img src={A(b.src)} alt="" style={{ left: b.l, top: b.t, width: b.w, height: b.h }} />
-            </button>
-          ))}
-        </div>
-      ))}
-    </>
-  )
-}
-
-export function UploadCta({ onClick }: { onClick?: () => void }) {
-  return (
-    <button className="cta upload" style={{ top: 756 }} onClick={onClick}>
-      <img src={A('icon-upload.svg')} alt="" style={{ width: 15, height: 14 }} />
-      Upload
-    </button>
   )
 }
 
@@ -299,22 +252,12 @@ export function UploadCta({ onClick }: { onClick?: () => void }) {
 export const FONTS = ['Modern', 'Calligraphy', 'Decorative', 'Literature']
 const COLORS = ['#ffffff', '#000000', '#ff0000', '#ff9900', '#ffdd00', '#00bb19', '#314db5', '#773bd7', '#e68adc', '#773bd7']
 
-export function TypeField({ value, placeholder, onClick, className = '' }: { value: string; placeholder?: boolean; onClick?: () => void; className?: string }) {
-  return (
-    <button className={'type-field ' + className} onClick={onClick} aria-label={placeholder ? 'Enter text' : undefined}>
-      <span style={{ opacity: placeholder ? 0.85 : 1 }}>{value}</span>
-    </button>
-  )
-}
-
 export function FontChips({ selected, onSelect }: { selected: number; onSelect?: (i: number) => void }) {
   const strip = useDragScroll()
   return (
     <div className="chip-strip" style={{ gap: 9.186 }} ref={strip}>
       {FONTS.map((f, i) => (
-        <button className={'font-chip' + (i === selected ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f} onClick={onSelect ? () => onSelect(i) : undefined} aria-pressed={i === selected}>
-          {f}
-        </button>
+        <button className={'font-chip' + (i === selected ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f} onClick={onSelect ? () => onSelect(i) : undefined} aria-pressed={i === selected}>{f}</button>
       ))}
     </div>
   )
@@ -342,16 +285,13 @@ export function Segmented({ active, onAa, onColor }: { active: 'aa' | 'color'; o
   return (
     <div className="segmented">
       <span className="seg-pill" style={{ left: active === 'aa' ? 5.56 : 115.27 }} />
-      <button className="seg-label" style={{ left: 5.56 }} onClick={onAa}>
-        Aa
-      </button>
-      <button className="seg-label" style={{ left: 115.27 }} onClick={onColor}>
-        Color
-      </button>
+      <button className="seg-label" style={{ left: 5.56 }} onClick={onAa}>Aa</button>
+      <button className="seg-label" style={{ left: 115.27 }} onClick={onColor}>Color</button>
     </div>
   )
 }
 
+/** The iOS keyboard from the file — shown on pointer devices only; touch devices get the real one. */
 export function Keyboard({ onReturn }: { onReturn?: () => void }) {
   return (
     <motion.div className="keyboard" {...slideUp(326)}>
@@ -369,18 +309,11 @@ export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { select
     <motion.div className="library" {...slideUp(800)}>
       <div className="lib-header">
         <button className="lib-round" onClick={onClose} aria-label="Close">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 2L12 12M2 12L12 2" stroke="black" strokeWidth="1.7" strokeLinecap="round" />
-          </svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2L12 12M2 12L12 2" stroke="black" strokeWidth="1.7" strokeLinecap="round" /></svg>
         </button>
-        <div className="lib-seg">
-          <button className="lib-seg-on">Photos</button>
-          <button className="lib-seg-off">Albums</button>
-        </div>
+        <div className="lib-seg"><button className="lib-seg-on">Photos</button><button className="lib-seg-off">Albums</button></div>
         <button className="lib-round lib-check" onClick={onConfirm} aria-label="Confirm">
-          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-            <path d="M2 6L6 10L14 2" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M2 6L6 10L14 2" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
       </div>
       <div className="lib-grid">
@@ -411,23 +344,17 @@ export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { select
   )
 }
 
-/* ----------------------------------------------------------------- sheets (occasion / name / calendar) */
+/* ----------------------------------------------------------------- sheet text */
 
 export function SheetHeading({ x, y, children }: { x: number; y: number; children: ReactNode }) {
-  return (
-    <p className="sheet-heading" style={{ left: x, top: y }}>
-      {children}
-    </p>
-  )
+  return <p className="sheet-heading" style={{ left: x, top: y }}>{children}</p>
 }
 
 export function Note({ x, y, w, children }: { x: number; y: number; w: number; children: ReactNode }) {
-  return (
-    <motion.p className="note" style={{ left: x, top: y, width: w }} {...fade}>
-      {children}
-    </motion.p>
-  )
+  return <motion.p className="note" style={{ left: x, top: y, width: w }} {...fade}>{children}</motion.p>
 }
+
+/* ----------------------------------------------------------------- occasion */
 
 const OCCASIONS: { label: string; w: number; arrow?: boolean }[][] = [
   [{ label: 'Wedding', w: 93.01 }, { label: 'New baby', w: 93.01 }, { label: 'Birthday', w: 93.01 }],
@@ -442,13 +369,7 @@ export function OccasionChips({ selected, onSelect }: { selected: string | null;
       {OCCASIONS.map((row, r) => (
         <div className="occ-row" style={{ gap: r === 1 ? 7 : 8 }} key={r}>
           {row.map((o) => (
-            <button
-              className={'occ-chip' + (o.label === selected ? ' selected' : '')}
-              style={{ width: o.w }}
-              key={o.label}
-              onClick={onSelect ? () => onSelect(o.label) : undefined}
-              aria-pressed={o.label === selected}
-            >
+            <button className={'occ-chip' + (o.label === selected ? ' selected' : '')} style={{ width: o.w }} key={o.label} onClick={onSelect ? () => onSelect(o.label) : undefined} aria-pressed={o.label === selected}>
               {o.label}
               {o.arrow && <img src={A('icon-others-arrow.svg')} alt="" style={{ width: 7, height: 7.98, marginLeft: 4 }} />}
             </button>
@@ -459,53 +380,153 @@ export function OccasionChips({ selected, onSelect }: { selected: string | null;
   )
 }
 
-const WEEK = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-// August 2026 starts on a Saturday
-const AUG_2026: (number | null)[][] = [
-  [null, null, null, null, null, null, 1],
-  [2, 3, 4, 5, 6, 7, 8],
-  [9, 10, 11, 12, 13, 14, 15],
-  [16, 17, 18, 19, 20, 21, 22],
-  [23, 24, 25, 26, 27, 28, 29],
-  [30, 31, null, null, null, null, null],
-]
+/* ----------------------------------------------------------------- calendar (2026) */
 
-export function Calendar({ selected, onDay }: { selected: number; onDay?: (d: number) => void }) {
+const WEEK = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+
+export function Calendar({ month, selected, monthsOpen, onDay, onToggleMonths, onMonth }: {
+  month: number; selected: number; monthsOpen: boolean; onDay?: (d: number) => void; onToggleMonths?: () => void; onMonth?: (m: number) => void
+}) {
+  const first = firstWeekday(month), days = daysIn(month)
+  const cells: (number | null)[] = [...Array(first).fill(null), ...Array.from({ length: days }, (_, i) => i + 1)]
+  while (cells.length % 7) cells.push(null)
+  const weeks = Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7))
   return (
     <div className="calendar">
       <div className="cal-head">
-        <span className="cal-month">
-          August
+        <button className={'cal-month' + (monthsOpen ? ' open' : '')} onClick={onToggleMonths} aria-expanded={monthsOpen}>
+          {MONTHS[month]}
           <img src={A('icon-chevron-down.svg')} alt="" style={{ width: 14, height: 8, marginLeft: 10 }} />
-        </span>
+        </button>
         <span className="cal-year">2026</span>
       </div>
       <div className="cal-line" />
       <div className="cal-body">
-        <div className="cal-row">
-          {WEEK.map((d, i) => (
-            <span className="cal-cell cal-wd" key={i}>
-              {d}
-            </span>
-          ))}
-        </div>
-        {AUG_2026.map((row, r) => (
-          <div className="cal-row" key={r}>
-            {row.map((d, i) => (
-              <button
-                className={'cal-cell' + (d === selected ? ' sel' : '')}
-                key={i}
-                onClick={d && onDay ? () => onDay(d) : undefined}
-                disabled={d === null}
-                aria-pressed={d === selected}
-              >
-                {d === selected && <motion.span className="cal-sel-pill" layoutId="cal-sel" transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
-                <span className="cal-day">{d ?? ''}</span>
-              </button>
-            ))}
-          </div>
-        ))}
+        <AnimatePresence initial={false} mode="wait">
+          {monthsOpen ? (
+            <motion.div className="cal-months" key="months" {...fade}>
+              {MONTHS_SHORT.map((m, i) => (
+                <button className={'occ-chip' + (i === month ? ' selected' : '')} key={m} onClick={() => onMonth?.(i)} aria-pressed={i === month}>{m}</button>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div key={'m' + month} {...fade}>
+              <div className="cal-row cal-week">
+                {WEEK.map((d, i) => <span className="cal-cell cal-wd" key={i}>{d}</span>)}
+              </div>
+              {weeks.map((row, r) => (
+                <div className="cal-row" key={r}>
+                  {row.map((d, i) => (
+                    <button className={'cal-cell' + (d === selected ? ' sel' : '')} key={i} onClick={d && onDay ? () => onDay(d) : undefined} disabled={d === null} aria-pressed={d === selected}>
+                      {d === selected && <motion.span className="cal-sel-pill" layoutId="cal-sel" transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
+                      <span className="cal-day">{d ?? ''}</span>
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
+}
+
+/* ----------------------------------------------------------------- format sheet */
+
+export function FormatChips({ selected, onSelect }: { selected: Format | null; onSelect?: (f: Format) => void }) {
+  const strip = useDragScroll()
+  return (
+    <div className="format-chips" ref={strip}>
+      {FORMATS.map((f) => (
+        <button className={'occ-chip format-chip' + (f.id === selected ? ' selected' : '')} key={f.id} onClick={() => onSelect?.(f.id)} aria-pressed={f.id === selected}>{f.label}</button>
+      ))}
+    </div>
+  )
+}
+
+export function FormatCard({ format }: { format: Format }) {
+  const f = FORMATS.find((x) => x.id === format)!
+  return (
+    <div className="format-card">
+      <div className="format-preview">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div key={format} className="format-art" {...fade}>
+            {format === 'montage' && (<><img className="fp-play" src={A('icon-play.svg')} alt="" /><span className="fp-time">00:05</span></>)}
+            {format === 'slideshow' && (<><span className="fp-slide s1" /><span className="fp-slide s2" /><span className="fp-slide s3" /></>)}
+            {format === 'prompted' && <span className="fp-rec"><i />0:07</span>}
+            {format === 'story' && (<><span className="fp-story">Happy Birthday!</span><span className="fp-rule" /></>)}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div key={format} className="format-copy" {...fade}>
+          <p className="format-title">{f.title}</p>
+          <p className="format-desc">{f.desc}</p>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
+/* ----------------------------------------------------------------- prompt sheet (ask wall) */
+
+export function AskWall({ open, typing, onToggle, onChoose }: { open: number | null; typing: boolean; onToggle?: (i: number) => void; onChoose?: (p: string) => void }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [h, setH] = useState(210)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setH(el.offsetHeight))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+  return (
+    <motion.div className="askwall" ref={ref} animate={{ top: typing ? 365 : 667 - h / 2 }} transition={{ duration: 0.3 }} initial={false}>
+      {ASK_WALL.map((sec, i) => (
+        <div className="ask-section" key={sec.label}>
+          <button className="ask-label" onClick={() => onToggle?.(i)} aria-expanded={open === i}>
+            {sec.label}
+            <img src={A('icon-chevron-small.svg')} alt="" style={{ width: 8, height: 5, transform: open === i ? 'rotate(180deg)' : 'none' }} />
+          </button>
+          <AnimatePresence initial={false}>
+            {(open === i ? sec.items : sec.items.slice(0, 1)).map((item) => (
+              <motion.button className="ask-item" key={item} onClick={() => onChoose?.(item)} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }}>
+                {item}
+              </motion.button>
+            ))}
+          </AnimatePresence>
+        </div>
+      ))}
+    </motion.div>
+  )
+}
+
+/* ----------------------------------------------------------------- checkout + room pieces */
+
+export function OptionRow({ title, desc, selected, onClick, top, height = 84 }: { title: string; desc: string; selected: boolean; onClick?: () => void; top: number; height?: number }) {
+  return (
+    <button className={'option-row' + (selected ? ' selected' : '')} style={{ top, height }} onClick={onClick} aria-pressed={selected}>
+      <span className="option-title">{title}</span>
+      <span className="option-desc">{desc}</span>
+    </button>
+  )
+}
+
+export function Table({ rows, top, height }: { rows: [string, string][]; top: number; height: number }) {
+  return (
+    <div className="table" style={{ top, height }}>
+      {rows.map(([k, v], i) => (
+        <div className="table-row" key={k}>
+          {i > 0 && <span className="table-rule" />}
+          <span className="table-k">{k}</span>
+          <span className="table-v">{v}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function StatusPill({ label, x, y }: { label: string; x: number; y: number }) {
+  return <div className="status-pill" style={{ left: x, top: y }}><i />{label}</div>
 }
