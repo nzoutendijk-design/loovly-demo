@@ -196,7 +196,7 @@ export function DetailChips({ occasion, who, when, format, prompt, onChip, rowsV
   return (
     <AnimatePresence initial={false}>
       {rows.map((row, i) => (
-        <motion.div className="chip-row" style={{ top: tops[i] }} key={i} {...fade}>
+        <motion.div className="chip-row" style={{ top: tops[i] }} key={i} initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.25, delay: i === 0 ? 0 : 0.3 } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
           {row.map((c) => (
             <button className="chip" key={c.key} onClick={onChip ? () => onChip(c.key) : undefined}>
               <img src={A(c.icon)} alt="" style={{ width: c.w, height: c.h }} />
@@ -224,41 +224,23 @@ export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: 
 
 type TrayItem = { id: string; label: string; thumb?: string; glyph?: string }
 
-/** The tray behind the hostbar: a label, optional filter chips, and a strip of tiles. */
-function TrayShell({ label, filters, filter, onFilter, items, selected, onSelect }: {
-  label: string; filters?: { id: string; label: string }[]; filter?: string; onFilter?: (id: string) => void
-  items: TrayItem[]; selected: string; onSelect?: (id: string) => void
-}) {
+function TrayStrip({ items, selected, onSelect, resetKey }: { items: TrayItem[]; selected: string; onSelect?: (id: string) => void; resetKey?: string }) {
   const strip = useDragScroll()
-  useEffect(() => { strip.current?.scrollTo({ left: 0 }) }, [filter, strip])
+  useEffect(() => { strip.current?.scrollTo({ left: 0 }) }, [resetKey, strip])
   return (
-    <motion.div className="layer layer-tray" {...slideUp(124)}>
-      <div className="tray">
-        <AnimatePresence initial={false}>
-          <motion.span key={label} className="tray-label" {...fade}>{label}</motion.span>
-        </AnimatePresence>
-        {filters && (
-          <div className="tray-filters">
-            {filters.map((f) => (
-              <button className={'tray-filter' + (f.id === filter ? ' on' : '')} key={f.id} onClick={() => onFilter?.(f.id)} aria-pressed={f.id === filter}>{f.label}</button>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="tray-thumbs" ref={strip}>
-        {items.map((it) => (
-          <button className={'thumb' + (it.id === selected ? ' on' : '') + (it.glyph ? ' glyph' : '')} key={it.id} onClick={onSelect ? () => onSelect(it.id) : undefined} aria-pressed={it.id === selected} title={it.label}>
-            {it.thumb ? <img src={it.thumb} alt="" loading="lazy" decoding="async" /> : <span className="thumb-glyph">{it.glyph}</span>}
-            <span className="thumb-label">{it.label}</span>
-          </button>
-        ))}
-      </div>
-    </motion.div>
+    <div className="tray-thumbs" ref={strip}>
+      {items.map((it) => (
+        <button className={'thumb' + (it.id === selected ? ' on' : '') + (it.glyph ? ' glyph' : '')} key={it.id} onClick={onSelect ? () => onSelect(it.id) : undefined} aria-pressed={it.id === selected} title={it.label}>
+          {it.thumb ? <img src={it.thumb} alt="" loading="lazy" decoding="async" /> : <span className="thumb-glyph">{it.glyph}</span>}
+          <span className="thumb-label">{it.label}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 
 /** VIBE: the 115 theme backgrounds, filtered by category. */
-export function ThemeTray({ selected, onSelect }: { selected: string | null; onSelect?: (slug: string | null) => void }) {
+function ThemeTrayBody({ selected, onSelect }: { selected: string | null; onSelect?: (slug: string | null) => void }) {
   const current = themeBySlug(selected)
   const [filter, setFilter] = useState<ThemeCategory>(current?.category ?? 'basic-gradient')
   const items: TrayItem[] = [
@@ -266,14 +248,39 @@ export function ThemeTray({ selected, onSelect }: { selected: string | null; onS
     ...THEMES.filter((t) => t.category === filter).map((t) => ({ id: t.slug, label: t.name, thumb: A(themeMobile(t, 1).replace('./', '')) })),
   ]
   return (
-    <TrayShell label="Vibe" filters={THEME_CATEGORIES} filter={filter} onFilter={(id) => setFilter(id as ThemeCategory)}
-      items={items} selected={selected ?? '__none'} onSelect={(id) => onSelect?.(id === '__none' ? null : id)} />
+    <>
+      <div className="tray-filters">
+        {THEME_CATEGORIES.map((f) => (
+          <button className={'tray-filter' + (f.id === filter ? ' on' : '')} key={f.id} onClick={() => setFilter(f.id)} aria-pressed={f.id === filter}>{f.label}</button>
+        ))}
+      </div>
+      <TrayStrip items={items} selected={selected ?? '__none'} onSelect={(id) => onSelect?.(id === '__none' ? null : id)} resetKey={filter} />
+    </>
   )
 }
 
-/** ANIMATIONS: the 20 LOV.DESIGN effects. */
-export function EffectTray({ selected, onSelect }: { selected: string; onSelect?: (id: string) => void }) {
-  return <TrayShell label="Animations" items={EFFECTS.map((e) => ({ id: e.id, label: e.name, glyph: e.glyph }))} selected={selected} onSelect={onSelect} />
+/**
+ * The tray behind the hostbar. One shell slides up while any tab is open; switching
+ * VIBE ↔ ANIMATIONS cross-fades the contents instead of sliding a second tray.
+ */
+export function Tray({ tab, theme, effect, onTheme, onEffect }: {
+  tab: 'vibe' | 'animations'; theme: string | null; effect: string; onTheme?: (slug: string | null) => void; onEffect?: (id: string) => void
+}) {
+  return (
+    <motion.div className="layer layer-tray" {...slideUp(124)}>
+      <div className="tray" />
+      <AnimatePresence initial={false}>
+        <motion.div className="layer layer-tray-body" key={tab} initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2, delay: 0.08 } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
+          <span className="tray-label">{tab === 'vibe' ? 'Vibe' : 'Animations'}</span>
+          {tab === 'vibe' ? (
+            <ThemeTrayBody selected={theme} onSelect={onTheme} />
+          ) : (
+            <TrayStrip items={EFFECTS.map((e) => ({ id: e.id, label: e.name, glyph: e.glyph }))} selected={effect} onSelect={onEffect} />
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </motion.div>
+  )
 }
 
 /**

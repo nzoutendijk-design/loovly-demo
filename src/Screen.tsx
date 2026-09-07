@@ -4,9 +4,9 @@
  */
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  AskWall, Background, BottomGradient, Calendar, Card, CloseX, ColorChips, DetailChips, Description, EffectHost, EffectTray, FontChips,
+  AskWall, Background, BottomGradient, Calendar, Card, CloseX, ColorChips, DetailChips, Description, EffectHost, FontChips,
   FormatCard, FormatChips, HostBar, Keyboard, Nav, Note, OccasionChips, Overlay, PhotoLibrary, Segmented, SheetHeading, Tabs, TextInput,
-  ThemeTray, Title, TopGradient,
+  Title, TopGradient, Tray,
 } from './components'
 import { Account, Campaign, Fork, Landing, Pay, Room, Sent, Where } from './pages'
 import { enter, fade, page as pageMotion } from './motion'
@@ -87,8 +87,10 @@ function Create({ s, act }: { s: State; act: (a: Action) => void }) {
       </motion.div>
       <EffectHost effect={s.effect} card={CARD_RECT} inkDark={inkDarkFor(s.theme)} />
       <AnimatePresence initial={false}>
-        {ov.kind === 'tray' && ov.tab === 'vibe' && <ThemeTray key="tray-vibe" selected={s.theme} onSelect={(theme) => act({ type: 'setTheme', theme })} />}
-        {ov.kind === 'tray' && ov.tab === 'animations' && <EffectTray key="tray-fx" selected={s.effect} onSelect={(effect) => act({ type: 'setEffect', effect })} />}
+        {ov.kind === 'tray' && (
+          <Tray key="tray" tab={ov.tab} theme={s.theme} effect={s.effect}
+            onTheme={(theme) => act({ type: 'setTheme', theme })} onEffect={(effect) => act({ type: 'setEffect', effect })} />
+        )}
       </AnimatePresence>
       <motion.div className="layer" {...E(3)}>
         <AnimatePresence initial={false}>
