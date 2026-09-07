@@ -28,11 +28,19 @@ function useDragScroll() {
     }
     const up = () => { dragging = false }
     const click = (e: MouseEvent) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false } }
+    // a plain mouse wheel (vertical only) scrolls the strip sideways; trackpads already scroll horizontally
+    const wheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return
+      el.scrollLeft += e.deltaY
+      e.preventDefault()
+    }
+    el.addEventListener('wheel', wheel, { passive: false })
     el.addEventListener('pointerdown', down)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
     el.addEventListener('click', click, true)
     return () => {
+      el.removeEventListener('wheel', wheel)
       el.removeEventListener('pointerdown', down)
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
