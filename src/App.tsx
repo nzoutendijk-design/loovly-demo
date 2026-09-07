@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { SCREENS } from './screens'
-import type { Navigate } from './screens'
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { Screen } from './Screen'
 import { asset } from './components'
+import { PRESETS, initial, matchPreset, reduce } from './state'
 
-const N = SCREENS.length
+const N = PRESETS.length
 const W = 390
 const H = 845
 
@@ -19,36 +19,44 @@ const ASSETS = [
 ]
 
 export default function App() {
-  const [idx, setIdx] = useState(readHash)
+  const [s, dispatch] = useReducer(reduce, undefined, () => PRESETS[readHash() - 1]?.state ?? initial)
+  const lastPreset = useRef(readHash())
   const [scale, setScale] = useState(1)
   const [desktop, setDesktop] = useState(false)
   const viewportRef = useRef<HTMLDivElement>(null)
   const touch = useRef<{ x: number; y: number } | null>(null)
 
+  // which designed frame (if any) the live state currently equals
+  const matched = matchPreset(s, lastPreset.current)
+
   const go = useCallback((n: number) => {
     const c = ((n - 1 + N) % N) + 1
-    setIdx(c)
-    history.replaceState(null, '', '#' + c)
+    lastPreset.current = c
+    dispatch({ type: 'preset', state: PRESETS[c - 1].state })
   }, [])
-  const nav: Navigate = { go, next: () => go(idx + 1), back: () => go(idx - 1) }
+  const step = useCallback((d: number) => go((matched ?? lastPreset.current) + d), [go, matched])
 
-  // hash → state (back/forward, deep links)
+  // state → hash (only while on a designed frame), hash → state (back/forward, deep links)
   useEffect(() => {
-    const h = () => setIdx(readHash())
+    if (matched) { lastPreset.current = matched; history.replaceState(null, '', '#' + matched) }
+    else history.replaceState(null, '', location.pathname)
+  }, [matched])
+  useEffect(() => {
+    const h = () => { const n = readHash(); if (location.hash && n !== matched) go(n) }
     addEventListener('hashchange', h)
     return () => removeEventListener('hashchange', h)
-  }, [])
+  }, [matched, go])
 
-  // ← / → keys for presenting on a desktop
+  // ← / → keys step through the designed sequence
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'PageDown') go(idx + 1)
-      if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(idx - 1)
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') step(1)
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') step(-1)
       if (e.key === 'Home') go(1)
     }
     addEventListener('keydown', k)
     return () => removeEventListener('keydown', k)
-  }, [idx, go])
+  }, [step, go])
 
   // fit the 390×845 stage into whatever viewport we have (safe-area aware)
   useEffect(() => {
@@ -74,12 +82,12 @@ export default function App() {
     return () => document.removeEventListener('touchstart', noop)
   }, [])
 
-  // warm the image cache so screen changes don't flash
+  // warm the image cache so state changes don't flash
   useEffect(() => {
     ASSETS.forEach((a) => { const i = new Image(); i.src = asset(a) })
   }, [])
 
-  const screen = SCREENS[idx - 1]
+  const preset = matched ? PRESETS[matched - 1] : null
   const boxW = desktop ? W + 24 : W
   const boxH = desktop ? H + 24 : H
 
@@ -89,23 +97,27 @@ export default function App() {
         className="stage-box"
         style={{ transform: `scale(${scale})`, width: boxW, height: boxH }}
         onTouchStart={(e) => {
-          // touches that start inside a scrollable strip scroll it; they never flip the screen
+          // touches that start inside a scrollable surface scroll it; they never flip the screen
           touch.current = (e.target as Element).closest('.chip-strip, .tray-thumbs, .library') ? null : { x: e.touches[0].clientX, y: e.touches[0].clientY }
         }}
         onTouchEnd={(e) => {
           const t = touch.current; touch.current = null
           if (!t) return
           const dx = e.changedTouches[0].clientX - t.x, dy = e.changedTouches[0].clientY - t.y
-          if (Math.abs(dx) > 70 && Math.abs(dy) < 60) go(dx < 0 ? idx + 1 : idx - 1)
+          if (Math.abs(dx) > 70 && Math.abs(dy) < 60) step(dx < 0 ? 1 : -1)
         }}
       >
-        <div className="stage" key={screen.id} data-screen={screen.id} data-figma-node={screen.node}>
-          {screen.render(nav)}
+        <div className="stage" data-screen={matched ?? ''} data-figma-node={preset?.node ?? ''} data-overlay={s.overlay.kind}>
+          <Screen s={s} act={dispatch} />
         </div>
       </div>
       {desktop && (
         <div className="hint">
-          <b>{screen.id}/{N}</b> · {screen.name} — tap: {screen.hotspot} · <b>←</b>/<b>→</b> keys to step
+          {preset ? (
+            <><b>{preset.id}/{N}</b> · {preset.name} — tap: {preset.hotspot} · <b>←</b>/<b>→</b> keys to step</>
+          ) : (
+            <>free navigation · <b>←</b>/<b>→</b> return to the designed sequence</>
+          )}
         </div>
       )}
     </div>

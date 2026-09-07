@@ -221,3 +221,9 @@ button:disabled { cursor: default; }
 .library { scrollbar-width: none; }
 .chip-strip::after, .tray-thumbs::after { content: ''; flex: none; width: 24px; }   /* trailing breathing room */
 .tray-thumbs::after { width: 18px; }
+
+/* ------------------------------------------------------------------ selection states (state-driven demo) */
+.color-chip { position: relative; }
+.color-chip.on { box-shadow: inset 0 0 0 1.5px #fff; }
+.color-chip input[type="color"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 .84px rgba(255,255,255,.7); }

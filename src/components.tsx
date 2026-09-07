@@ -4,10 +4,17 @@
  */
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
+import { PHOTOS } from './state'
+
+/** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
+declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
+export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? `./assets/${name}`
+const A = asset
 
 /**
  * Mouse drag-to-scroll for horizontal strips (touch scrolls natively). Accounts for the
- * CSS scale of the stage and suppresses the click that would otherwise fire after a drag.
+ * CSS scale of the stage, maps a plain vertical wheel to sideways scrolling, and suppresses
+ * the click that would otherwise fire after a drag.
  */
 function useDragScroll() {
   const ref = useRef<HTMLDivElement>(null)
@@ -28,7 +35,6 @@ function useDragScroll() {
     }
     const up = () => { dragging = false }
     const click = (e: MouseEvent) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false } }
-    // a plain mouse wheel (vertical only) scrolls the strip sideways; trackpads already scroll horizontally
     const wheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return
       el.scrollLeft += e.deltaY
@@ -49,11 +55,6 @@ function useDragScroll() {
   }, [])
   return ref
 }
-
-/** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
-declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
-export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? `./assets/${name}`
-const A = asset
 
 /* ----------------------------------------------------------------- base */
 
@@ -94,12 +95,10 @@ export function Description() {
   )
 }
 
-/* Bottom gradient sitting under the hostbar (Figma "Rectangle" 0,716 390×129) */
 export function BottomGradient() {
   return <div className="bottom-gradient" />
 }
 
-/* 10×10 close cross (stroke extends to 11.06) */
 export function CloseX({ x, y, onClick }: { x: number; y: number; onClick?: () => void }) {
   return (
     <button className="close-x" style={{ left: x - 0.53, top: y - 0.53 }} onClick={onClick} aria-label="Close">
@@ -112,20 +111,18 @@ export function CloseX({ x, y, onClick }: { x: number; y: number; onClick?: () =
 
 /* ----------------------------------------------------------------- card */
 
-export type CardVariant = 'cat' | 'cake' | 'photo'
+// the two illustration cards use the exact crops from the Figma file; anything else fills the card
+const CROPS: Record<string, CSSProperties> = {
+  'card-cat.jpg': { left: -15, top: -21, width: 273, height: 380 },
+  'card-cake.jpg': { left: -7, top: -13, width: 251, height: 353 },
+}
 
-export function Card({ variant, caption, onPencil }: { variant: CardVariant; caption?: boolean; onPencil?: () => void }) {
+export function Card({ src, caption, color, onPencil }: { src: string; caption?: string; color?: string; onPencil?: () => void }) {
+  const crop = CROPS[src]
   return (
     <div className="card">
-      {variant === 'photo' ? (
-        <img className="card-fill" src={A('card-photo.jpg')} alt="" />
-      ) : (
-        <img className="card-img" style={{ left: -15, top: -21, width: 273, height: 380 }} src={A('card-cat.jpg')} alt="" />
-      )}
-      {variant === 'cake' && (
-        <img className="card-img" style={{ left: -7, top: -13, width: 251, height: 353 }} src={A('card-cake.jpg')} alt="" />
-      )}
-      {caption && <span className="card-caption">happy birthday</span>}
+      {crop ? <img className="card-img" style={crop} src={A(src)} alt="" /> : <img className="card-fill" src={A(src)} alt="" />}
+      {caption && <span className="card-caption" style={{ color }}>{caption}</span>}
       <button className="card-pencil" onClick={onPencil} aria-label="Edit card">
         <img src={A('card-pencil-bg.svg')} alt="" style={{ left: 0, top: 0, width: 40, height: 40 }} />
         <img src={A('card-pencil.svg')} alt="" style={{ left: 0.32, top: 0, width: 39.04, height: 39.04 }} />
@@ -137,29 +134,24 @@ export function Card({ variant, caption, onPencil }: { variant: CardVariant; cap
 
 /* ----------------------------------------------------------------- detail chips */
 
-export type ChipState = 'empty' | 'occasion' | 'who' | 'when'
+export type ChipKey = 'occasion' | 'who' | 'when' | 'format' | 'prompt'
+type Chip = { icon: string; w: number; h: number; label: string; key: ChipKey }
 
-type Chip = { icon: string; w: number; h: number; label: string; key: string }
-
-const ICON = {
-  pencil: { icon: 'icon-pencil.svg', w: 12, h: 12 },
-  paw: { icon: 'icon-paw.svg', w: 12, h: 12 },
-  calendar: { icon: 'icon-calendar.svg', w: 10.53, h: 11 },
-  format: { icon: 'icon-format.svg', w: 12, h: 10 },
-  chat: { icon: 'icon-chat.svg', w: 11, h: 11 },
-}
-
-function chipRows(state: ChipState): Chip[][] {
-  const occasion = { ...ICON.pencil, key: 'occasion', label: state === 'empty' ? 'Occasion' : 'Birthday' }
-  const who = { ...ICON.paw, key: 'who', label: state === 'empty' || state === 'occasion' ? 'Who’s it for' : 'Emily' }
-  const when = { ...ICON.calendar, key: 'when', label: state === 'when' ? '28 Aug' : 'When is it' }
-  const format = { ...ICON.format, key: 'format', label: 'Format Type' }
-  const prompt = { ...ICON.chat, key: 'prompt', label: 'Choose Prompt' }
-  return [[occasion, who], [when, format], [prompt]]
-}
-
-export function DetailChips({ state, onChip, rowsVisible = 3 }: { state: ChipState; onChip?: (key: string) => void; rowsVisible?: number }) {
-  const rows = chipRows(state).slice(0, rowsVisible)
+export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
+  occasion: string | null; who: string | null; when: string | null; onChip?: (key: ChipKey) => void; rowsVisible?: number
+}) {
+  const all: Chip[][] = [
+    [
+      { icon: 'icon-pencil.svg', w: 12, h: 12, key: 'occasion', label: occasion ?? 'Occasion' },
+      { icon: 'icon-paw.svg', w: 12, h: 12, key: 'who', label: who ?? 'Who’s it for' },
+    ],
+    [
+      { icon: 'icon-calendar.svg', w: 10.53, h: 11, key: 'when', label: when ?? 'When is it' },
+      { icon: 'icon-format.svg', w: 12, h: 10, key: 'format', label: 'Format Type' },
+    ],
+    [{ icon: 'icon-chat.svg', w: 11, h: 11, key: 'prompt', label: 'Choose Prompt' }],
+  ]
+  const rows = all.slice(0, rowsVisible)
   const tops = [531, 571, 611]
   return (
     <>
@@ -177,7 +169,7 @@ export function DetailChips({ state, onChip, rowsVisible = 3 }: { state: ChipSta
   )
 }
 
-/* ----------------------------------------------------------------- hostbar */
+/* ----------------------------------------------------------------- hostbar + tray */
 
 export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: () => void; onAnimations?: () => void; onSetting?: () => void; onDone?: () => void }) {
   return (
@@ -201,10 +193,9 @@ export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: 
   )
 }
 
-/* Vibe / Animations tray (screens 19 & 21) */
 const VIBES = ['vibe-1.jpg', 'vibe-2.jpg', 'vibe-2.jpg', 'vibe-3.jpg', 'vibe-4.jpg', 'vibe-5.jpg', 'vibe-4.jpg']
 
-export function Tray({ label, onThumb }: { label: string; onThumb?: () => void }) {
+export function Tray({ label, selected, onSelect }: { label: string; selected: number; onSelect?: (i: number) => void }) {
   const strip = useDragScroll()
   return (
     <>
@@ -213,7 +204,7 @@ export function Tray({ label, onThumb }: { label: string; onThumb?: () => void }
       </div>
       <div className="tray-thumbs" ref={strip}>
         {VIBES.map((v, i) => (
-          <button className={'thumb' + (i === 0 ? ' on' : '')} key={i} onClick={i === 0 ? onThumb : undefined}>
+          <button className={'thumb' + (i === selected ? ' on' : '')} key={i} onClick={onSelect ? () => onSelect(i) : undefined} aria-pressed={i === selected}>
             <img src={A(v)} alt="" />
           </button>
         ))}
@@ -224,13 +215,10 @@ export function Tray({ label, onThumb }: { label: string; onThumb?: () => void }
 
 /* ----------------------------------------------------------------- blurred "Bottom Bars" overlay */
 
-export type OverlayKind = 'picker' | 'sheet' | 'calendar'
-
-export function Overlay({ kind, children }: { kind: OverlayKind; children?: ReactNode }) {
+export function Overlay({ kind, children }: { kind: 'picker' | 'sheet' | 'calendar'; children?: ReactNode }) {
   return <div className={'overlay overlay-' + kind}>{children}</div>
 }
 
-/* Image / Type tabs (overlay coords 23.59,127.5) */
 export function Tabs({ active, onImage, onType }: { active: 'image' | 'type'; onImage?: () => void; onType?: () => void }) {
   return (
     <div className="tabs">
@@ -244,7 +232,7 @@ export function Tabs({ active, onImage, onType }: { active: 'image' | 'type'; on
   )
 }
 
-/* ----------------------------------------------------------------- image picker grid (screen 2) */
+/* ----------------------------------------------------------------- image picker grid */
 
 type Box = { src: string; l: number; t: number; w: number; h: number }
 const GRID: Box[][] = [
@@ -262,14 +250,14 @@ const GRID: Box[][] = [
   ],
 ]
 
-export function ImageGrid({ onPick }: { onPick?: (row: number, col: number) => void }) {
+export function ImageGrid({ onPick }: { onPick?: (src: string) => void }) {
   const tops = [176, 391, 606]
   return (
     <>
       {GRID.map((row, r) => (
         <div className="grid-row" style={{ top: tops[r] }} key={r}>
-          {row.map((b, c) => (
-            <button className="box" key={c} onClick={onPick ? () => onPick(r, c) : undefined}>
+          {row.map((b) => (
+            <button className="box" key={b.src} onClick={onPick ? () => onPick(b.src) : undefined}>
               <img src={A(b.src)} alt="" style={{ left: b.l, top: b.t, width: b.w, height: b.h }} />
             </button>
           ))}
@@ -288,25 +276,25 @@ export function UploadCta({ onClick }: { onClick?: () => void }) {
   )
 }
 
-/* ----------------------------------------------------------------- type editor (screens 6–8) */
+/* ----------------------------------------------------------------- type editor */
 
-const FONTS = ['Modern', 'Calligraphy', 'Decorative', 'Literature']
+export const FONTS = ['Modern', 'Calligraphy', 'Decorative', 'Literature']
 const COLORS = ['#ffffff', '#000000', '#ff0000', '#ff9900', '#ffdd00', '#00bb19', '#314db5', '#773bd7', '#e68adc', '#773bd7']
 
-export function TypeField({ value, onClick }: { value: string; onClick?: () => void }) {
+export function TypeField({ value, placeholder, onClick, className = '' }: { value: string; placeholder?: boolean; onClick?: () => void; className?: string }) {
   return (
-    <button className="type-field" onClick={onClick}>
-      <span>{value}</span>
+    <button className={'type-field ' + className} onClick={onClick} aria-label={placeholder ? 'Enter text' : undefined}>
+      <span style={{ opacity: placeholder ? 0.85 : 1 }}>{value}</span>
     </button>
   )
 }
 
-export function FontChips() {
+export function FontChips({ selected, onSelect }: { selected: number; onSelect?: (i: number) => void }) {
   const strip = useDragScroll()
   return (
     <div className="chip-strip" style={{ gap: 9.186 }} ref={strip}>
       {FONTS.map((f, i) => (
-        <button className={'font-chip' + (i === 0 ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f}>
+        <button className={'font-chip' + (i === selected ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f} onClick={onSelect ? () => onSelect(i) : undefined} aria-pressed={i === selected}>
           {f}
         </button>
       ))}
@@ -314,15 +302,17 @@ export function FontChips() {
   )
 }
 
-export function ColorChips() {
+export function ColorChips({ selected, onSelect }: { selected: string; onSelect?: (c: string) => void }) {
   const strip = useDragScroll()
+  const input = useRef<HTMLInputElement>(null)
   return (
     <div className="chip-strip" style={{ gap: 10.887 }} ref={strip}>
-      <button className="color-chip picker" aria-label="Pick a colour">
+      <button className="color-chip picker" aria-label="Pick a colour" onClick={() => input.current?.click()}>
         <img src={A('icon-eyedropper.svg')} alt="" style={{ width: 17.78, height: 17.78 }} />
+        <input ref={input} type="color" value={selected} onChange={(e) => onSelect?.(e.target.value)} tabIndex={-1} aria-hidden />
       </button>
       {COLORS.map((c, i) => (
-        <button className="color-chip" key={i} aria-label={c}>
+        <button className={'color-chip' + (c === selected ? ' on' : '')} key={i} aria-label={c} onClick={onSelect ? () => onSelect(c) : undefined} aria-pressed={c === selected}>
           <i style={{ background: c, width: i === 3 ? 23.7 : 24.89 }} />
         </button>
       ))}
@@ -348,24 +338,15 @@ export function Keyboard({ onReturn }: { onReturn?: () => void }) {
   return (
     <div className="keyboard">
       <img src={A('keyboard@3x.png')} alt="" />
-      {/* return key hotspot (Figma marks the key as a prototype link) */}
       <button className="key-return" onClick={onReturn} aria-label="return" />
     </div>
   )
 }
 
-/* ----------------------------------------------------------------- photo library (screens 4–5) */
+/* ----------------------------------------------------------------- photo library */
 
-const PHOTOS = [
-  ['photo-01.jpg', 'photo-02.jpg', 'photo-03.jpg'],
-  ['photo-04.jpg', 'photo-05.jpg', 'photo-06.jpg'],
-  ['photo-07.jpg', 'photo-08b.jpg', 'photo-09.jpg'],
-  ['photo-10.jpg', 'photo-11.jpg', 'photo-12.jpg'],
-  ['photo-13.jpg', 'photo-14.jpg', 'photo-15.jpg'],
-  ['photo-16.jpg', 'photo-17.jpg', 'photo-18.jpg'],
-]
-
-export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { selected?: boolean; onClose?: () => void; onPhoto?: () => void; onConfirm?: () => void }) {
+export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { selected: number | null; onClose?: () => void; onPhoto?: (i: number) => void; onConfirm?: () => void }) {
+  const rows = Array.from({ length: PHOTOS.length / 3 }, (_, r) => PHOTOS.slice(r * 3, r * 3 + 3))
   return (
     <div className="library">
       <div className="lib-header">
@@ -385,14 +366,15 @@ export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { select
         </button>
       </div>
       <div className="lib-grid">
-        {PHOTOS.map((row, r) => (
+        {rows.map((row, r) => (
           <div className="lib-row" key={r}>
             {row.map((p, c) => {
-              const first = r === 0 && c === 0
+              const i = r * 3 + c
+              const on = i === selected
               return (
-                <button className="lib-cell" key={c} onClick={first ? onPhoto : undefined}>
+                <button className="lib-cell" key={p} onClick={onPhoto ? () => onPhoto(i) : undefined} aria-pressed={on}>
                   <img src={A(p)} alt="" />
-                  {first && selected && (
+                  {on && (
                     <>
                       <span className="lib-dim" />
                       <img className="lib-ck-circle" src={A('photo-check-circle.svg')} alt="" />
@@ -419,9 +401,9 @@ export function SheetHeading({ x, y, children }: { x: number; y: number; childre
   )
 }
 
-export function Note({ x, y, w, children, style }: { x: number; y: number; w: number; children: ReactNode; style?: CSSProperties }) {
+export function Note({ x, y, w, children }: { x: number; y: number; w: number; children: ReactNode }) {
   return (
-    <p className="note" style={{ left: x, top: y, width: w, ...style }}>
+    <p className="note" style={{ left: x, top: y, width: w }}>
       {children}
     </p>
   )
@@ -434,32 +416,26 @@ const OCCASIONS: { label: string; w: number; arrow?: boolean }[][] = [
   [{ label: 'Retirement', w: 109 }, { label: 'Farewell', w: 93.01 }, { label: 'Others', w: 93.01, arrow: true }],
 ]
 
-export function OccasionChips({ selected, onBirthday }: { selected: boolean; onBirthday?: () => void }) {
+export function OccasionChips({ selected, onSelect }: { selected: string | null; onSelect?: (o: string) => void }) {
   return (
     <div className="occasions">
       {OCCASIONS.map((row, r) => (
         <div className="occ-row" style={{ gap: r === 1 ? 7 : 8 }} key={r}>
-          {row.map((o) => {
-            const isBirthday = o.label === 'Birthday'
-            const cls = 'occ-chip' + (isBirthday ? (selected ? ' selected' : ' on') : '')
-            return (
-              <button className={cls} style={{ width: o.w }} key={o.label} onClick={isBirthday ? onBirthday : undefined}>
-                {o.label}
-                {o.arrow && <img src={A('icon-others-arrow.svg')} alt="" style={{ width: 7, height: 7.98, marginLeft: 4 }} />}
-              </button>
-            )
-          })}
+          {row.map((o) => (
+            <button
+              className={'occ-chip' + (o.label === selected ? ' selected' : '')}
+              style={{ width: o.w }}
+              key={o.label}
+              onClick={onSelect ? () => onSelect(o.label) : undefined}
+              aria-pressed={o.label === selected}
+            >
+              {o.label}
+              {o.arrow && <img src={A('icon-others-arrow.svg')} alt="" style={{ width: 7, height: 7.98, marginLeft: 4 }} />}
+            </button>
+          ))}
         </div>
       ))}
     </div>
-  )
-}
-
-export function NameField({ value, onClick }: { value: string; onClick?: () => void }) {
-  return (
-    <button className="type-field name-field" onClick={onClick}>
-      <span>{value}</span>
-    </button>
   )
 }
 
@@ -501,6 +477,7 @@ export function Calendar({ selected, onDay }: { selected: number; onDay?: (d: nu
                 key={i}
                 onClick={d && onDay ? () => onDay(d) : undefined}
                 disabled={d === null}
+                aria-pressed={d === selected}
               >
                 {d ?? ''}
               </button>

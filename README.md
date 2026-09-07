@@ -3,8 +3,9 @@
 A pixel-faithful, clickable web reproduction of the 22 iPhone frames in the Figma file
 [Loovly-test › Create Card](https://www.figma.com/design/GQApxxZ9dQvh453nfbF7gR/Loovly-test?node-id=1-824).
 Each screen is rebuilt in HTML/CSS at the design’s native 390 × 845 pt and scaled to fit
-whatever device opens it. Tapping the natural control on each screen advances to the next one —
-see [docs/NAVIGATION.md](docs/NAVIGATION.md) for the full flow.
+whatever device opens it. The demo is state-driven: every control changes the card state from
+wherever you are (VIBE on the first screen opens the vibe tray over that card), and the 22 designed
+frames remain reachable as presets — see [docs/NAVIGATION.md](docs/NAVIGATION.md).
 
 **Live demo:** https://nzoutendijk-design.github.io/loovly-demo/ (open on an iPhone → Share → *Add to Home Screen* for full-screen).
 
@@ -50,11 +51,10 @@ it full-screen (no Safari chrome, status-bar-safe), which is the closest match t
 
 | Input | Action |
 | --- | --- |
-| Tap the highlighted control (see the flow doc) | next screen |
-| Tap ✕ / back-style controls | previous screen |
-| Swipe left / right | next / previous |
-| ← / → keys (desktop) | previous / next |
-| `#n` in the URL | jump straight to screen *n* (1–22) |
+| Tap any control | changes the card state (opens a sheet, sets a value, closes it…) |
+| Swipe left / right | previous / next designed frame |
+| ← / → keys (desktop) | previous / next designed frame |
+| `#n` in the URL | jump straight to designed frame *n* (1–22) |
 
 Every control has a hover state (pointer devices) and a pressed state (all devices). The Figma file
 defines neither, so they follow its glass style: lighter fill and brighter stroke on hover, a 95 % scale
@@ -67,8 +67,9 @@ screen, its name and what to tap.
 
 ```
 src/
-  App.tsx          stage scaling, hash routing, swipe + keyboard navigation
-  screens.tsx      the 22 screens in Figma canvas order, with their hotspots
+  App.tsx          stage scaling, preset routing (#n), swipe + keyboard stepping
+  state.ts         the card state, reducer, and the 22 designed frames as presets
+  Screen.tsx       renders the current state as one frame and wires every control
   components.tsx   shared pieces: background, nav, card, chips, hostbar, overlays, sheets…
   styles.css       all styling, in Figma frame units
 public/
