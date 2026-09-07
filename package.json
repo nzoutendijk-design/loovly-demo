@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "bundle": "npm run build && node scripts/bundle-single-file.mjs",
-    "deploy": "bash scripts/deploy-pages.sh"
+    "deploy": "bash scripts/deploy-pages.sh",
+    "fx": "node scripts/scope-fx-css.mjs && cp vendor/loovly-handoff/effects/fx/fx.js public/fx/fx.js"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",

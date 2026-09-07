@@ -1,6 +1,6 @@
 /** The non-editor pages of the creator story: entry, the fork, checkout and the room. */
 import { motion } from 'framer-motion'
-import { Card, Cta, Nav, OptionRow, StatusPill, Table, TextInput, TopGradient, asset as A } from './components'
+import { Card, Cta, EffectHost, Nav, OptionRow, StatusPill, Table, TextInput, TopGradient, asset as A } from './components'
 import { enter } from './motion'
 import { MONTHS, ordinal } from './state'
 import type { Action, State } from './state'
@@ -167,6 +167,9 @@ export function Room({ s, act }: P) {
           {s.text && <span className="room-cap" style={{ color: s.color }}>{s.text.toLowerCase()}</span>}
         </div>
         <StatusPill label="LOCKED" x={139} y={183} />
+      </motion.div>
+      <EffectHost effect={s.effect} card={{ left: 76, top: 167, width: 238, height: 317 }} />
+      <motion.div className="layer" {...E(1)}>
         <button className="card-pencil room-pencil" onClick={go(act, 'create')} aria-label="Edit card">
           <img src={A('card-pencil-bg.svg')} alt="" style={{ left: 0, top: 0, width: 40, height: 40 }} />
           <img src={A('card-pencil.svg')} alt="" style={{ left: 0.32, top: 0, width: 39.04, height: 39.04 }} />

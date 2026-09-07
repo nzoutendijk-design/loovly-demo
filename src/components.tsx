@@ -8,10 +8,13 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ASK_WALL, FORMATS, MONTHS, MONTHS_SHORT, PHOTOS, daysIn, firstWeekday } from './state'
 import type { Format } from './state'
 import { dim, fade, sheet, slideUp } from './motion'
+import { THEMES, THEME_CATEGORIES, themeBySlug, themeMobile } from './themes'
+import type { ThemeCategory } from './themes'
+import { EFFECTS, effectIndex } from './effects'
 
 /** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
 declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
-export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? `./assets/${name}`
+export const asset = (name: string) => window.__INLINE_ASSETS__?.[name] ?? (name.includes('/') ? `./${name}` : `./assets/${name}`)
 const A = asset
 
 /** Mouse drag-to-scroll for horizontal strips (touch scrolls natively); wheel scrolls sideways. */
@@ -43,13 +46,29 @@ function useDragScroll() {
 
 /* ----------------------------------------------------------------- base */
 
-export function Background({ dark }: { dark?: boolean }) {
+/** The screen background: the BGS-Light texture, or the chosen theme (mobile crop, 1×/2×/3×). */
+export function Background({ dark, theme }: { dark?: boolean; theme?: string | null }) {
   if (dark) return <div className="bg" />
+  const t = themeBySlug(theme ?? null)
+  const inlined = !!window.__INLINE_ASSETS__   // the single-file build carries the 1× crops only
   return (
     <div className="bg">
       <div className="bg-img"><img src={A('bg-light.jpg')} alt="" /></div>
       <div className="bg-soft" />
       <div className="bg-dark" />
+      <AnimatePresence initial={false}>
+        {t && (
+          <motion.img
+            key={t.slug}
+            className="bg-theme"
+            src={A(themeMobile(t, 1).replace('./', ''))}
+            srcSet={inlined ? undefined : `${themeMobile(t, 1)} 1x, ${themeMobile(t, 2)} 2x, ${themeMobile(t, 3)} 3x`}
+            alt=""
+            {...fade}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -203,25 +222,94 @@ export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: 
   )
 }
 
-const VIBES = ['vibe-1.jpg', 'vibe-2.jpg', 'vibe-2.jpg', 'vibe-3.jpg', 'vibe-4.jpg', 'vibe-5.jpg', 'vibe-4.jpg']
+type TrayItem = { id: string; label: string; thumb?: string; glyph?: string }
 
-export function Tray({ label, selected, onSelect }: { label: string; selected: number; onSelect?: (i: number) => void }) {
+/** The tray behind the hostbar: a label, optional filter chips, and a strip of tiles. */
+function TrayShell({ label, filters, filter, onFilter, items, selected, onSelect }: {
+  label: string; filters?: { id: string; label: string }[]; filter?: string; onFilter?: (id: string) => void
+  items: TrayItem[]; selected: string; onSelect?: (id: string) => void
+}) {
   const strip = useDragScroll()
+  useEffect(() => { strip.current?.scrollTo({ left: 0 }) }, [filter, strip])
   return (
     <motion.div className="layer layer-tray" {...slideUp(124)}>
       <div className="tray">
         <AnimatePresence initial={false}>
           <motion.span key={label} className="tray-label" {...fade}>{label}</motion.span>
         </AnimatePresence>
+        {filters && (
+          <div className="tray-filters">
+            {filters.map((f) => (
+              <button className={'tray-filter' + (f.id === filter ? ' on' : '')} key={f.id} onClick={() => onFilter?.(f.id)} aria-pressed={f.id === filter}>{f.label}</button>
+            ))}
+          </div>
+        )}
       </div>
       <div className="tray-thumbs" ref={strip}>
-        {VIBES.map((v, i) => (
-          <button className={'thumb' + (i === selected ? ' on' : '')} key={i} onClick={onSelect ? () => onSelect(i) : undefined} aria-pressed={i === selected}>
-            <img src={A(v)} alt="" />
+        {items.map((it) => (
+          <button className={'thumb' + (it.id === selected ? ' on' : '') + (it.glyph ? ' glyph' : '')} key={it.id} onClick={onSelect ? () => onSelect(it.id) : undefined} aria-pressed={it.id === selected} title={it.label}>
+            {it.thumb ? <img src={it.thumb} alt="" loading="lazy" decoding="async" /> : <span className="thumb-glyph">{it.glyph}</span>}
+            <span className="thumb-label">{it.label}</span>
           </button>
         ))}
       </div>
     </motion.div>
+  )
+}
+
+/** VIBE: the 115 theme backgrounds, filtered by category. */
+export function ThemeTray({ selected, onSelect }: { selected: string | null; onSelect?: (slug: string | null) => void }) {
+  const current = themeBySlug(selected)
+  const [filter, setFilter] = useState<ThemeCategory>(current?.category ?? 'basic-gradient')
+  const items: TrayItem[] = [
+    { id: '__none', label: 'None', glyph: '–' },
+    ...THEMES.filter((t) => t.category === filter).map((t) => ({ id: t.slug, label: t.name, thumb: A(themeMobile(t, 1).replace('./', '')) })),
+  ]
+  return (
+    <TrayShell label="Vibe" filters={THEME_CATEGORIES} filter={filter} onFilter={(id) => setFilter(id as ThemeCategory)}
+      items={items} selected={selected ?? '__none'} onSelect={(id) => onSelect?.(id === '__none' ? null : id)} />
+  )
+}
+
+/** ANIMATIONS: the 20 LOV.DESIGN effects. */
+export function EffectTray({ selected, onSelect }: { selected: string; onSelect?: (id: string) => void }) {
+  return <TrayShell label="Animations" items={EFFECTS.map((e) => ({ id: e.id, label: e.name, glyph: e.glyph }))} selected={selected} onSelect={onSelect} />
+}
+
+/**
+ * Mounts a LoovlyFX effect over the screen through the package's documented API:
+ * a `.phone-body` host with the `.cin-art` marker, a `.fxroot` layer, and for the two
+ * card-bound effects (tape, scratch) a `.cardfx` anchor placed exactly over the card.
+ */
+export function EffectHost({ effect, card }: { effect: string; card: { left: number; top: number; width: number; height: number } }) {
+  const root = useRef<HTMLDivElement>(null)
+  const cardfx = useRef<HTMLDivElement>(null)
+  const meta = EFFECTS.find((e) => e.id === effect)
+  const bound = !!meta?.cardBound
+  useEffect(() => {
+    const FX = window.LoovlyFX, el = root.current, cf = cardfx.current
+    if (!FX || !el || effect === 'none') return
+    const idx = effectIndex(effect)
+    if (idx < 0) return
+    FX.mount(el, idx)
+    if (bound && cf) FX.mountCard(cf, idx)
+    return () => {
+      try { FX.unmount(el) } catch { /* already gone */ }
+      if (cf) { try { FX.unmount(cf) } catch { /* already gone */ } }
+    }
+  }, [effect, bound])
+  if (effect === 'none') return null
+  return (
+    <div className="fx-host phone-body" data-effect={effect}>
+      <div className="phone-scr">
+        {bound ? (
+          <div className={(effect === 'tape' ? 'tapebox' : 'scratchbox') + ' cin-art'} style={card}><div className="cardfx" ref={cardfx} /></div>
+        ) : (
+          <i className="cin-art" style={{ display: 'none' }} />
+        )}
+      </div>
+      <div className="fxroot" ref={root} />
+    </div>
   )
 }
 

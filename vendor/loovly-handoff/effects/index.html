@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LOV.DESIGN Effects — Local Review</title>
+<link rel="stylesheet" href="fx/fx.css">
+<style>
+  :root{ --ground:#818181; --ink:#111; }
+  *{box-sizing:border-box}
+  html,body{height:auto;min-height:100vh}
+  /* fx.css is an app sheet and locks body{overflow:hidden} — this page scrolls */
+  body{margin:0;padding:0;background:var(--ground);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);overflow:auto}
+  nav.topnav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:8px;padding:14px 20px;background:rgba(129,129,129,.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.15)}
+  nav.topnav .brand{font-weight:700;letter-spacing:.02em;margin-right:12px;color:#1a1a1a;font-size:14px}
+  nav.topnav button{appearance:none;border:1px solid rgba(0,0,0,.25);background:rgba(255,255,255,.22);color:#1a1a1a;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+  nav.topnav button.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+  .prog{margin-left:auto;font-size:12px;color:#2a2a2a;font-variant-numeric:tabular-nums}
+  main{padding:18px 0 40px}
+  .cat{margin:10px 0 26px}
+  .cat h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2e2e2e;padding:0 20px 10px;margin:0}
+  .trow{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,max-content);gap:22px 18px;overflow-x:auto;padding:2px 20px 16px;scrollbar-width:thin;align-items:start;justify-content:start}
+  .shot{width:195px;margin:0}
+  .shot.wide{width:480px}
+  .screen{position:relative;width:195px;height:422.5px;overflow:hidden;background:#f4f0e6;box-shadow:0 2px 10px rgba(0,0,0,.25);border-radius:0}
+  .shot.wide .screen{width:480px;height:270px}
+  .screen .phone-scr{position:relative;z-index:1;width:100%;height:100%}
+  .screen .fxroot{position:static}
+  /* the centered UI on the web stage — overrides the bench's own .cin-card */
+  .webstage .cin-card{position:absolute;left:50%;top:50%;width:auto;height:86%;aspect-ratio:1170/2478;transform:translate(-50%,-50%);display:block;overflow:hidden;animation:none;z-index:2;border-radius:10px}
+  .webstage .cin-card img.ui{width:100%;height:100%;display:block}
+  .webstage .cin-card .cardfx{position:absolute;inset:0}
+  /* arcade face coins — web only, 15% smaller than the bench's 85% (mobile keeps 85%) */
+  .webstage .px-face{width:72.25%}
+  /* backrooms tape needs a card-sized anchor: an invisible box, centred,
+     scaled to fit these small screens (the tape draws at fixed px around it) */
+  .tapebox{position:absolute;left:50%;top:50%;width:240px;height:320px;transform:translate(-50%,-50%) scale(0.5);z-index:2}
+  .webstage .tapebox{transform:translate(-50%,-50%) scale(0.62)}
+  .tapebox .cardfx{position:absolute;inset:0}
+  /* scratch-off gets a real centred card: the silver canvas paints it,
+     rubbing erases down to the ground */
+  .scratchbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:118px;height:158px;z-index:2;border-radius:8px;overflow:hidden}
+  .webstage .scratchbox{width:150px;height:200px}
+  .scratchbox .cardfx{position:absolute;inset:0}
+  /* web flowers: the field is authored around the phone's centre, so a wide
+     stage gets two extra plantings shifted into the side gutters (the right
+     one mirrored so it doesn't read as a copy) */
+  /* bench pokéball: the fall was authored for the 845pt phone (it opens at
+     y=390 — below the web stage entirely) and per-ball durations drift the
+     six phases into convoys on these short screens. Equal clocks, phases
+     dealt a sixth apart, lanes alternating sides, 10% smaller, and a fall
+     resized so every ball opens mid-screen. */
+  .screen .pb{animation-name:pbFallM;animation-duration:9.6s !important;--fd:9.6s !important}
+  .webstage .pb{animation-name:pbFallW}
+  @keyframes pbFallM{0%{transform:translate3d(0,-90px,0) rotate(var(--r0,0deg))}50%{transform:translate3d(var(--dx,0px),190px,0) rotate(var(--r1,0deg))}100%{transform:translate3d(0,470px,0) rotate(var(--r0,0deg))}}
+  @keyframes pbFallW{0%{transform:translate3d(0,-70px,0) rotate(var(--r0,0deg))}50%{transform:translate3d(var(--dx,0px),112px,0) rotate(var(--r1,0deg))}100%{transform:translate3d(0,300px,0) rotate(var(--r0,0deg))}}
+  .screen .fx-pokeball.fx-front .pb:nth-child(1){left:6% !important;width:45px !important;animation-delay:0s !important;--fdl:0s !important}
+  .screen .fx-pokeball.fx-back .pb:nth-child(1){left:55% !important;width:39.6px !important;animation-delay:-1.6s !important;--fdl:-1.6s !important}
+  .screen .fx-pokeball.fx-front .pb:nth-child(2){left:30% !important;width:46.7px !important;animation-delay:-3.2s !important;--fdl:-3.2s !important}
+  .screen .fx-pokeball.fx-back .pb:nth-child(2){left:76% !important;width:41.3px !important;animation-delay:-4.8s !important;--fdl:-4.8s !important}
+  .screen .fx-pokeball.fx-front .pb:nth-child(3){left:16% !important;width:43.1px !important;animation-delay:-6.4s !important;--fdl:-6.4s !important}
+  .screen .fx-pokeball.fx-back .pb:nth-child(3){left:64% !important;width:48.5px !important;animation-delay:-8s !important;--fdl:-8s !important}
+  /* bench pac-man: the maze is authored 390x845 with 24px rails, so on these
+     screens he lapped straight out of the box. The mobile screen is exactly
+     half the phone — scale the whole party 1:1. The web stage gets its own
+     wide lap (pcPathW/pcHeadW) run at the maze's 76.3px/s so the queue's
+     inline time delays still read as the same distance gaps. */
+  .screen:not(.webstage) .fx-pacman{width:390px;height:845px;transform:scale(0.5);transform-origin:0 0}
+  .webstage .pc-man,.webstage .pc-face{animation-name:pcPathW;animation-duration:15.206s !important}
+  .webstage .pc-head{animation-name:pcHeadW;animation-duration:15.206s !important}
+  @keyframes pcPathW{
+    0%{transform:translate3d(36px,24px,0)}
+    32.589%{transform:translate3d(414px,24px,0)}
+    34.052%{transform:translate3d(426px,36px,0)}
+    48.536%{transform:translate3d(426px,204px,0)}
+    50%{transform:translate3d(414px,216px,0)}
+    82.589%{transform:translate3d(36px,216px,0)}
+    84.052%{transform:translate3d(24px,204px,0)}
+    98.536%{transform:translate3d(24px,36px,0)}
+    100%{transform:translate3d(36px,24px,0)}
+  }
+  @keyframes pcHeadW{
+    0%,32.589%{transform:rotate(0deg)}
+    34.052%,48.536%{transform:rotate(90deg)}
+    50%,82.589%{transform:rotate(180deg)}
+    84.052%,98.536%{transform:rotate(270deg)}
+    100%{transform:rotate(360deg)}
+  }
+  .screen .fxroot.fxside{position:absolute;inset:0;pointer-events:none}
+  .screen .fxroot.fxside.fxl{transform:translateX(-31%)}
+  .screen .fxroot.fxside.fxr{transform:translateX(31%) scaleX(-1)}
+  .shot figcaption{padding:7px 1px 0;font-size:11px;color:#222;height:66px;overflow:hidden}
+  .shot .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .shot .meta{color:#333;opacity:.75}
+  .empty{padding:60px 20px;text-align:center;color:#2e2e2e}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="brand">LOV.DESIGN · Effects</span>
+  <button id="t-appbg" class="on">Mobile</button>
+  <button id="t-web">Web</button>
+  <span class="prog" id="prog"></span>
+</nav>
+<main id="main"><div class="empty">Loading…</div></main>
+<script src="fx/fx.js"></script>
+<script>
+let mode="appbg", io=null;
+const FX = LoovlyFX.EFFECTS.map((e,i)=>({...e,i})).filter(e=>e.id!=="none");
+document.getElementById("prog").textContent = FX.length + " effects";
+
+document.querySelectorAll("nav.topnav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav.topnav button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); mode=b.id.slice(2); render();
+}));
+
+function card(e){
+  /* the hidden .cin-art marker satisfies the bench's
+     `.phone-body:not(:has(.cin-art)) .fx { display:none }` guard */
+  /* the two card-bound effects get a centred anchor: an invisible box for the
+     tape to frame, a real one for the scratch silver to paint */
+  const anchor = e.id==="tape"
+    ? `<div class="tapebox cin-art"><div class="cardfx"></div></div>`
+    : e.id==="scratch"
+    ? `<div class="scratchbox cin-art"><div class="cardfx"></div></div>`
+    : `<i class="cin-art" style="display:none"></i>`;
+  if(mode==="appbg"){
+    return `<figure class="shot"><div class="screen phone-body" data-fx="${e.i}">
+      <div class="phone-scr">${anchor}</div>
+      <div class="fxroot"></div></div>
+      <figcaption><div class="nm" title="${e.nm}">${e.nm}</div>
+      <div class="meta">${e.ds}</div></figcaption></figure>`;
+  }
+  const sides = e.id==="flowers" ? `<div class="fxroot fxside fxl"></div><div class="fxroot fxside fxr"></div>` : "";
+  return `<figure class="shot wide"><div class="screen phone-body webstage" data-fx="${e.i}">
+    <div class="phone-scr">${anchor}</div>
+    ${sides}<div class="fxroot"></div></div>
+    <figcaption><div class="nm" title="${e.nm}">${e.nm}</div>
+    <div class="meta">${e.ds}</div></figcaption></figure>`;
+}
+
+function mountOne(pb){
+  /* undefined = the observer hasn't spoken yet — mount, so the page still
+     runs where IO never fires (file://, headless); IO then prunes offscreen */
+  const idx = pb._vis !== false ? Number(pb.dataset.fx) : 0;
+  pb.querySelectorAll(".fxroot").forEach(fr=>LoovlyFX.mount(fr, idx));
+  const cf = pb.querySelector(".cardfx");
+  if(cf) LoovlyFX.mountCard(cf, idx);
+}
+
+function watch(){
+  if(io) io.disconnect();
+  io=new IntersectionObserver(es=>{
+    es.forEach(en=>{ en.target._vis=en.isIntersecting; mountOne(en.target); });
+  },{rootMargin:"140px"});
+  document.querySelectorAll(".phone-body").forEach(el=>io.observe(el));
+}
+
+/* handwriting: D0NI computes each word's spot once, so every rewrite lands
+   on the same ground. The bench wants them wandering — respot each word at
+   its loop seam (0% of hwWrite is fully clipped, so the move is invisible),
+   dodging whichever spots its siblings currently hold. */
+document.addEventListener("animationiteration", ev=>{
+  const el=ev.target;
+  if(!el.classList || !el.classList.contains("hw")) return;
+  const scr=el.closest(".screen"); if(!scr) return;
+  const R=scr.getBoundingClientRect(), B=el.getBoundingClientRect();
+  if(!R.width||!B.width) return;
+  const wp=B.width/R.width*100, hp=B.height/R.height*100;
+  const sibs=[...scr.querySelectorAll(".hw")].filter(s=>s!==el)
+    .map(s=>({x:parseFloat(s.style.left)||0, y:parseFloat(s.style.top)||0}));
+  let x=2, y=2;
+  for(let t=0;t<14;t++){
+    x=2+Math.random()*Math.max(1,96-wp);
+    y=2+Math.random()*Math.max(1,92-hp);
+    if(!sibs.some(s=>Math.abs(s.x-x)<wp*0.85 && Math.abs(s.y-y)<hp*1.1)) break;
+  }
+  el.style.left=x.toFixed(1)+"%";
+  el.style.top=y.toFixed(1)+"%";
+});
+
+function render(){
+  LoovlyFX.reset();
+  document.getElementById("main").innerHTML =
+    `<section class="cat"><h2>Effects · ${FX.length}</h2><div class="trow">${FX.map(card).join("")}</div></section>`;
+  watch();
+}
+render();
+</script>
+</body>
+</html>

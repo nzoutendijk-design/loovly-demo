@@ -1,0 +1,582 @@
+{
+ "generated": "2026-09-04",
+ "source": "Figma LOV.DESIGN Rounds 6288:93115 via loovly-handoff.vercel.app/themes",
+ "total": 115,
+ "themes": [
+  {
+   "slug": "apple-green",
+   "name": "Apple Green",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "heart",
+   "name": "Heart",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "gradient-glow",
+   "name": "Gradient Glow",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "red",
+   "name": "Red",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "prism",
+   "name": "Prism",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "rainbow",
+   "name": "Rainbow",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "pearl",
+   "name": "Pearl",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "rose-fun",
+   "name": "Rose fun",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "sorbet",
+   "name": "Sorbet",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "rose",
+   "name": "Rose",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "tulip",
+   "name": "Tulip",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "pink-hearts",
+   "name": "Pink Hearts",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "ribbon",
+   "name": "Ribbon",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "flowers",
+   "name": "Flowers",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "flowers-2",
+   "name": "Flowers",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "bubble-blur",
+   "name": "Bubble + blur",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "deep-ocean",
+   "name": "Deep ocean",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "deep-flowers",
+   "name": "deep flowers",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "ribbon-2",
+   "name": "Ribbon",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "ribbon-3",
+   "name": "Ribbon",
+   "category": "basic-gradient"
+  },
+  {
+   "slug": "grass-w-yellow",
+   "name": "Grass w/ yellow",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "petal",
+   "name": "Petal",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "leaf",
+   "name": "Leaf",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "glass-prism",
+   "name": "glass prism",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "blurred-hearts",
+   "name": "blurred hearts",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "strong-rainbow",
+   "name": "Strong rainbow",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "mist-in-the-blossom",
+   "name": "mist in the blossom",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "zigzag",
+   "name": "zigzag",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "wavy-orange",
+   "name": "wavy orange",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "tree-shadow",
+   "name": "tree shadow",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "sorbet-2",
+   "name": "sorbet",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "blooming",
+   "name": "blooming",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "grainy-orange",
+   "name": "grainy orange",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "hermes",
+   "name": "Hermes",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "gazing",
+   "name": "Gazing",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "continuing-ripple",
+   "name": "continuing ripple",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "sun-sea",
+   "name": "sun & sea",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "sunset",
+   "name": "sunset",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "shine-prism",
+   "name": "shine prism",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "orange-flowers",
+   "name": "orange flowers",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "dots",
+   "name": "dots",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "mix",
+   "name": "mix",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "rainbow-fish",
+   "name": "rainbow fish",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "rainbow-fish-2",
+   "name": "rainbow fish",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "cloud",
+   "name": "cloud",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "orange-tree",
+   "name": "orange tree",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "textured-red",
+   "name": "textured red",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "furious",
+   "name": "Furious",
+   "category": "complex-gradient"
+  },
+  {
+   "slug": "friends",
+   "name": "friends",
+   "category": "photo"
+  },
+  {
+   "slug": "party",
+   "name": "Party",
+   "category": "photo"
+  },
+  {
+   "slug": "pasta-1",
+   "name": "Pasta 1",
+   "category": "photo"
+  },
+  {
+   "slug": "bubble",
+   "name": "Bubble",
+   "category": "photo"
+  },
+  {
+   "slug": "busy-barbie",
+   "name": "busy barbie",
+   "category": "photo"
+  },
+  {
+   "slug": "princess-in-the-hole",
+   "name": "princess in the hole",
+   "category": "photo"
+  },
+  {
+   "slug": "coupon",
+   "name": "Coupon",
+   "category": "photo"
+  },
+  {
+   "slug": "road",
+   "name": "Road",
+   "category": "photo"
+  },
+  {
+   "slug": "soccer-ball-woman-s-shoe",
+   "name": "Soccer ball & woman's shoe",
+   "category": "photo"
+  },
+  {
+   "slug": "tomato",
+   "name": "Tomato",
+   "category": "photo"
+  },
+  {
+   "slug": "hamster",
+   "name": "hamster",
+   "category": "photo"
+  },
+  {
+   "slug": "night-yard",
+   "name": "night yard",
+   "category": "photo"
+  },
+  {
+   "slug": "cat",
+   "name": "Cat",
+   "category": "photo"
+  },
+  {
+   "slug": "screeming-woman",
+   "name": "screeming woman",
+   "category": "photo"
+  },
+  {
+   "slug": "chess",
+   "name": "Chess",
+   "category": "photo"
+  },
+  {
+   "slug": "skateboard-granma",
+   "name": "skateboard granma",
+   "category": "photo"
+  },
+  {
+   "slug": "pink-spiderman",
+   "name": "pink spiderman",
+   "category": "photo"
+  },
+  {
+   "slug": "grandma-poker",
+   "name": "grandma poker",
+   "category": "photo"
+  },
+  {
+   "slug": "rich-dog",
+   "name": "rich dog",
+   "category": "photo"
+  },
+  {
+   "slug": "pink-grandma",
+   "name": "pink grandma",
+   "category": "photo"
+  },
+  {
+   "slug": "john-cena",
+   "name": "John Cena",
+   "category": "photo"
+  },
+  {
+   "slug": "stay-salty",
+   "name": "stay salty",
+   "category": "photo"
+  },
+  {
+   "slug": "wizard",
+   "name": "wizard",
+   "category": "photo"
+  },
+  {
+   "slug": "pink-park",
+   "name": "Pink park",
+   "category": "illustration"
+  },
+  {
+   "slug": "racoons",
+   "name": "racoons",
+   "category": "illustration"
+  },
+  {
+   "slug": "monkeys",
+   "name": "Monkeys",
+   "category": "illustration"
+  },
+  {
+   "slug": "cane",
+   "name": "Cane",
+   "category": "illustration"
+  },
+  {
+   "slug": "bar",
+   "name": "Bar",
+   "category": "illustration"
+  },
+  {
+   "slug": "palm-beach",
+   "name": "palm beach",
+   "category": "illustration"
+  },
+  {
+   "slug": "rainy-day",
+   "name": "rainy day",
+   "category": "illustration"
+  },
+  {
+   "slug": "shark",
+   "name": "shark",
+   "category": "illustration"
+  },
+  {
+   "slug": "pixel-night",
+   "name": "pixel night",
+   "category": "illustration"
+  },
+  {
+   "slug": "pixel-night-2",
+   "name": "pixel night",
+   "category": "illustration"
+  },
+  {
+   "slug": "fish",
+   "name": "fish",
+   "category": "illustration"
+  },
+  {
+   "slug": "tan",
+   "name": "Tan",
+   "category": "illustration"
+  },
+  {
+   "slug": "riding-horse",
+   "name": "riding horse",
+   "category": "illustration"
+  },
+  {
+   "slug": "zoo",
+   "name": "zoo",
+   "category": "illustration"
+  },
+  {
+   "slug": "persian-carpet",
+   "name": "persian carpet",
+   "category": "illustration"
+  },
+  {
+   "slug": "cocktails",
+   "name": "cocktails",
+   "category": "illustration"
+  },
+  {
+   "slug": "surfing",
+   "name": "surfing",
+   "category": "illustration"
+  },
+  {
+   "slug": "animal",
+   "name": "animal",
+   "category": "illustration"
+  },
+  {
+   "slug": "lotus",
+   "name": "lotus",
+   "category": "illustration"
+  },
+  {
+   "slug": "autumn",
+   "name": "autumn",
+   "category": "illustration"
+  },
+  {
+   "slug": "farm",
+   "name": "farm",
+   "category": "illustration"
+  },
+  {
+   "slug": "flamingo",
+   "name": "flamingo",
+   "category": "illustration"
+  },
+  {
+   "slug": "stars-in-the-sea",
+   "name": "stars in the sea",
+   "category": "illustration"
+  },
+  {
+   "slug": "skiing",
+   "name": "skiing",
+   "category": "illustration"
+  },
+  {
+   "slug": "wall-painting",
+   "name": "wall painting",
+   "category": "illustration"
+  },
+  {
+   "slug": "lizard-mokeys",
+   "name": "lizard&mokeys",
+   "category": "illustration"
+  },
+  {
+   "slug": "eros",
+   "name": "eros",
+   "category": "illustration"
+  },
+  {
+   "slug": "jungle",
+   "name": "jungle",
+   "category": "illustration"
+  },
+  {
+   "slug": "lotus-2",
+   "name": "lotus",
+   "category": "illustration"
+  },
+  {
+   "slug": "night",
+   "name": "night",
+   "category": "illustration"
+  },
+  {
+   "slug": "vintage-stars",
+   "name": "vintage stars",
+   "category": "illustration"
+  },
+  {
+   "slug": "yacht",
+   "name": "Yacht",
+   "category": "illustration"
+  },
+  {
+   "slug": "sharp-leaves",
+   "name": "sharp leaves",
+   "category": "illustration"
+  },
+  {
+   "slug": "cooking",
+   "name": "cooking",
+   "category": "illustration"
+  },
+  {
+   "slug": "canes",
+   "name": "canes",
+   "category": "illustration"
+  },
+  {
+   "slug": "garden",
+   "name": "garden",
+   "category": "illustration"
+  },
+  {
+   "slug": "sparkle-rabbit",
+   "name": "sparkle rabbit",
+   "category": "illustration"
+  },
+  {
+   "slug": "swimming",
+   "name": "swimming",
+   "category": "illustration"
+  },
+  {
+   "slug": "destroyed-summer",
+   "name": "destroyed summer",
+   "category": "illustration"
+  },
+  {
+   "slug": "beach-scene",
+   "name": "beach scene",
+   "category": "illustration"
+  },
+  {
+   "slug": "baseball",
+   "name": "baseball",
+   "category": "illustration"
+  },
+  {
+   "slug": "daisy",
+   "name": "daisy",
+   "category": "illustration"
+  },
+  {
+   "slug": "fox",
+   "name": "fox",
+   "category": "illustration"
+  },
+  {
+   "slug": "circus",
+   "name": "circus",
+   "category": "illustration"
+  }
+ ]
+}

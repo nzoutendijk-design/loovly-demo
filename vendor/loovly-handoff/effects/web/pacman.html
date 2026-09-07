@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pac-Man — Loovly effect (web 480x270)</title>
+<link rel="stylesheet" href="../fx/fx.css">
+<style>
+  html,body{height:100%}
+  /* the gray is a viewing mat only — the effect layer itself is transparent */
+  body{margin:0;background:#818181;overflow:hidden;display:grid;place-items:center}
+  .stage{position:relative;width:480px;height:270px;overflow:hidden;outline:1px dashed rgba(0,0,0,.35);background:none}
+  .stage .phone-scr{position:relative;z-index:1;width:100%;height:100%}
+  .stage .fxroot{position:static}
+  .stage .pc-man,.stage .pc-face{animation-name:pcPathW;animation-duration:15.206s !important}
+  .stage .pc-head{animation-name:pcHeadW;animation-duration:15.206s !important}
+  @keyframes pcPathW{
+    0%{transform:translate3d(36px,24px,0)}
+    32.589%{transform:translate3d(414px,24px,0)}
+    34.052%{transform:translate3d(426px,36px,0)}
+    48.536%{transform:translate3d(426px,204px,0)}
+    50%{transform:translate3d(414px,216px,0)}
+    82.589%{transform:translate3d(36px,216px,0)}
+    84.052%{transform:translate3d(24px,204px,0)}
+    98.536%{transform:translate3d(24px,36px,0)}
+    100%{transform:translate3d(36px,24px,0)}
+  }
+  @keyframes pcHeadW{
+    0%,32.589%{transform:rotate(0deg)}
+    34.052%,48.536%{transform:rotate(90deg)}
+    50%,82.589%{transform:rotate(180deg)}
+    84.052%,98.536%{transform:rotate(270deg)}
+    100%{transform:rotate(360deg)}
+  }
+</style>
+</head>
+<body>
+<div class="stage phone-body">
+  <div class="phone-scr"><i class="cin-art" style="display:none"></i></div>
+  <div class="fxroot"></div>
+</div>
+<script src="../fx/fx.js"></script>
+<script>
+const idx=LoovlyFX.EFFECTS.findIndex(e=>e.id==="pacman");
+document.querySelectorAll(".fxroot").forEach(el=>LoovlyFX.mount(el,idx));
+const cf=document.querySelector(".cardfx");if(cf)LoovlyFX.mountCard(cf,idx);
+const st=document.querySelector(".stage");
+function fit(){const s=Math.min(innerWidth*0.94/480,innerHeight*0.94/270);st.style.transform=`scale(${s})`;}
+addEventListener("resize",fit);fit();
+</script>
+</body>
+</html>

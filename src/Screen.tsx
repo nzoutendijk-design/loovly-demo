@@ -4,9 +4,9 @@
  */
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  AskWall, Background, BottomGradient, Calendar, Card, CloseX, ColorChips, DetailChips, Description, FontChips, FormatCard,
-  FormatChips, HostBar, Keyboard, Nav, Note, OccasionChips, Overlay, PhotoLibrary, Segmented, SheetHeading, Tabs, TextInput,
-  Title, TopGradient, Tray,
+  AskWall, Background, BottomGradient, Calendar, Card, CloseX, ColorChips, DetailChips, Description, EffectHost, EffectTray, FontChips,
+  FormatCard, FormatChips, HostBar, Keyboard, Nav, Note, OccasionChips, Overlay, PhotoLibrary, Segmented, SheetHeading, Tabs, TextInput,
+  ThemeTray, Title, TopGradient,
 } from './components'
 import { Account, Campaign, Fork, Landing, Pay, Room, Sent, Where } from './pages'
 import { enter, fade, page as pageMotion } from './motion'
@@ -14,13 +14,14 @@ import { FORMATS, MONTHS, dateLabel, zodiac } from './state'
 import type { Action, Overlay as OverlayState, State } from './state'
 
 const E = (i: number) => ({ variants: enter, custom: i, initial: 'hidden' as const, animate: 'shown' as const })
+const CARD_RECT = { left: 73, top: 117, width: 244, height: 325.74 }
 
 export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
   const dark = s.page === 'campaign'
   return (
     <>
       <AnimatePresence initial={false}>
-        <motion.div className="layer" key={dark ? 'dark' : 'light'} {...fade}><Background dark={dark} /></motion.div>
+        <motion.div className="layer" key={dark ? 'dark' : 'light'} {...fade}><Background dark={dark} theme={s.theme} /></motion.div>
       </AnimatePresence>
       <AnimatePresence initial={false}>
         <motion.div className="page" key={s.page} {...pageMotion}>
@@ -83,11 +84,10 @@ function Create({ s, act }: { s: State; act: (a: Action) => void }) {
           )}
         </AnimatePresence>
       </motion.div>
+      <EffectHost effect={s.effect} card={CARD_RECT} />
       <AnimatePresence initial={false}>
-        {ov.kind === 'tray' && (
-          <Tray key="tray" label={ov.tab === 'vibe' ? 'Vibe' : 'Animations'} selected={ov.tab === 'vibe' ? s.vibe : s.animation}
-            onSelect={(i) => act(ov.tab === 'vibe' ? { type: 'setVibe', index: i } : { type: 'setAnimation', index: i })} />
-        )}
+        {ov.kind === 'tray' && ov.tab === 'vibe' && <ThemeTray key="tray-vibe" selected={s.theme} onSelect={(theme) => act({ type: 'setTheme', theme })} />}
+        {ov.kind === 'tray' && ov.tab === 'animations' && <EffectTray key="tray-fx" selected={s.effect} onSelect={(effect) => act({ type: 'setEffect', effect })} />}
       </AnimatePresence>
       <motion.div className="layer" {...E(3)}>
         <AnimatePresence initial={false}>

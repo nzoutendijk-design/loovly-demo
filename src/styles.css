@@ -63,6 +63,7 @@ p, h1 { margin: 0; }
 .bg-img img { width: 100%; height: 100%; object-fit: cover; }
 .bg-soft { position: absolute; inset: 0; background: rgba(255,255,255,.3); mix-blend-mode: soft-light; }
 .bg-dark { position: absolute; inset: 0; background: rgba(0,0,0,.08); }
+.bg-theme { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .top-gradient { position: absolute; left: 0; top: 1px; width: 390px; height: 129px; background: linear-gradient(0deg, rgba(102,102,102,0) 0%, rgba(0,0,0,.4) 100%); -webkit-backdrop-filter: blur(3.75px); backdrop-filter: blur(3.75px); pointer-events: none; }
 .bottom-gradient { position: absolute; left: 0; top: 716px; width: 390px; height: 129px; background: linear-gradient(180deg, rgba(102,102,102,0) 0%, rgba(0,0,0,.4) 100%); -webkit-backdrop-filter: blur(3.75px); backdrop-filter: blur(3.75px); pointer-events: none; }
 
@@ -109,10 +110,28 @@ p, h1 { margin: 0; }
 .host-tab span { position: absolute; left: 0; top: 45px; width: 90px; text-align: center; font: 400 10px/13px var(--geist); letter-spacing: 1.5px; color: #fff; }
 .tray { position: absolute; left: 0; top: 569px; width: 390px; height: 124px; background: rgba(0,0,0,.08); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); box-shadow: inset 0 0 0 1px var(--lov-stroke-chip); }
 .tray-label { position: absolute; left: 17px; top: 17px; font: 500 12px/16px var(--geist); color: #fff; }
-.tray-thumbs { position: absolute; left: 18px; top: 621px; width: 372px; height: 48.96px; display: flex; gap: 10.08px; }
-.thumb { position: relative; width: 48.96px; height: 48.96px; border-radius: 14px; overflow: hidden; flex: none; }
+.tray-filters { position: absolute; right: 16px; top: 12px; display: flex; gap: 6px; }
+.tray-filter { height: 24px; padding: 0 10px; border-radius: 24px; box-shadow: inset 0 0 0 1px var(--lov-stroke-chip); font: 400 11px/14px var(--geist); color: var(--lov-text-72); white-space: nowrap; }
+.tray-filter.on { background: var(--lov-surface-glass-wash); box-shadow: inset 0 0 0 1px var(--lov-stroke-strong); color: #fff; font-weight: 500; }
+.tray-thumbs { position: absolute; left: 18px; top: 617px; width: 372px; height: 70px; display: flex; gap: 10.08px; }
+.thumb { position: relative; width: 48.96px; height: 48.96px; border-radius: 14px; flex: none; }
+.thumb img, .thumb-glyph { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
-.thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 .84px rgba(255,255,255,.7); }
+.thumb-glyph { display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; background: var(--lov-surface-glass-wash); box-shadow: inset 0 0 0 1px var(--lov-stroke-chip); }
+.thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.85); }
+.thumb-label { position: absolute; left: -8px; right: -8px; top: 52px; text-align: center; font: 400 9px/11px var(--geist); color: var(--lov-text-72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thumb.on .thumb-label { color: #fff; }
+
+/* LoovlyFX effect layer (styles come from public/fx/fx.css, scoped under .fx-host) */
+.fx-host { position: absolute; inset: 0; width: 390px; height: 845px; overflow: hidden; pointer-events: none; z-index: 1; isolation: isolate; background: none !important; --scr-w: 390px; --scr-h: 845px; }
+.layer-tray, .layer:has(> .hostbar), .layer:has(> .room-bar) { z-index: 2; }
+.overlay, .library, .page > .note { z-index: 3; }
+.fx-host .phone-scr { position: relative; z-index: 1; width: 100%; height: 100%; }
+.fx-host .fxroot { position: static; }
+.fx-host .tapebox { position: absolute; z-index: 2; }
+.fx-host .tapebox .cardfx { position: absolute; inset: 0; }
+.fx-host .scratchbox { position: absolute; z-index: 2; border-radius: 16px; overflow: hidden; pointer-events: auto; }
+.fx-host .scratchbox .cardfx { position: absolute; inset: 0; }
 
 /* ------------------------------------------------------------------ "Bottom Bars" sheets */
 .overlay { position: absolute; left: 0; top: -18px; width: 390px; height: 862px; overflow: hidden; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
@@ -331,6 +350,7 @@ button:disabled { cursor: default; }
   .burger-btn:hover .burger { background: #fff; }
   .thumb:hover::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
   .thumb.on:hover::after { box-shadow: inset 0 0 0 1px #fff; }
+  .tray-filter:hover { color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); }
   .seg-label:hover { background: rgba(255,255,255,.12); border-radius: 8px; }
   .cal-cell:not(:disabled):hover { background: rgba(255,255,255,.14); }
   .cal-cell.sel:hover { background: transparent; }
@@ -359,6 +379,7 @@ button:disabled { cursor: default; }
 .card-pencil:active { transform: scale(.88); filter: brightness(1.4); }
 .close-x:active { transform: scale(.85); }
 .thumb:active { transform: scale(.92); }
+.tray-filter:active { transform: scale(.95); }
 .seg-label:active { background: rgba(255,255,255,.18); border-radius: 8px; }
 .cal-cell:not(:disabled):active { background: rgba(255,255,255,.22); }
 .cal-cell.sel:active { background: transparent; }

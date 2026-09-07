@@ -36,7 +36,18 @@ client. Figma node ids refer to `GQApxxZ9dQvh453nfbF7gR`.
 - [ ] Fonts: Decorative and Literature have no font assigned in the file; the chips select but the caption stays Caveat. **decide** the two faces.
 - [ ] Tokens now exist in code as `--lov-*` (`src/styles.css`), named after the file’s variables where they exist. The file exposes only a handful (`text-primary`, `stroke-card`, `radius-cta`, `space-32`, `size-section`); the rest are hard-coded rgba values in the frames and should become variables.
 
+## Themes and effects (handoff package)
+
+- [ ] The effects tray has no thumbnail art in either the Figma file or the package; built as glyph tiles with labels. **decide** whether the designer draws 20 thumbs or the tiles stay as glyphs.
+- [ ] The theme tray needed a way through 115 items; built with category filter chips (Basic · Complex · Photo · Illustration) in the tray header and tile labels. Not in the file.
+- [ ] Theme names in the package are inconsistent in case and carry duplicates (three “Ribbon”, two “Flowers”, two “rainbow fish”, two “pixel night”, two “lotus”, “sorbet” twice across categories). Labels are shown as delivered.
+- [ ] Several package names look like typos: “screeming woman”, “skateboard granma”, “lizard&mokeys”, “racoons”. Shown as delivered.
+- [ ] `fx.css` is a whole-product stylesheet (792 classes, `body`/`button`/`input` rules, `@tailwind` directives left in) rather than an effects-only sheet. It is scoped under `.fx-host` at build time; the package would be safer to ship as effects-only CSS.
+- [ ] Effect assets and three fonts are loaded from `sunos.fm` at runtime by the package; if that host goes away the effects lose their art. Worth asking for them inlined or delivered as files.
+- [ ] Effects are authored for the 390×845 stage and the 16:9 web stage; the app is phone-shaped on desktop too, so only the mobile variants are used. Web crops and web effect pages are kept for a future desktop layout.
+- [ ] The package’s Scratch-off covers the card, so the pencil is unreachable while it is on. Fine for a demo; needs a rule in the real product.
+- [ ] Vibe and animations both apply globally (the chosen theme follows into checkout and the room). The frames only show them on the create screen. **decide**
+
 ## Not in this Figma file
 
 - Sections 1 Room / Feed, 2 Card Player, 3 Composer, 4 Contributor Gate are **not in this file**; only section 5 is. The room states that do exist (`13 Empty` → `R5 remove confirm`, 25 frames at the end of section 5) are the Room/Feed and will be the next build once the client confirms where the other sections live.
-- The effects package (loovly-handoff.vercel.app/gate) hasn’t been opened yet: it’s behind an access code, which I don’t enter myself. Nick can unlock it in the browser pane and I’ll take timing and easing from it.

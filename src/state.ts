@@ -31,8 +31,8 @@ export type State = {
   name: string
   month: number                // 0–11, 2026
   day: number | null
-  vibe: number
-  animation: number
+  theme: string | null          // theme slug (src/themes.ts) or the BGS-Light default
+  effect: string                // LoovlyFX effect id, 'none' for plain
   format: Format | null
   promptOpen: number | null    // expanded ask-wall section
   ask: string                  // own ask, as typed
@@ -67,7 +67,7 @@ export const ASK_WALL: { label: string; items: string[] }[] = [
 
 export const initial: State = {
   page: 'campaign', card: 'card-cat.jpg', text: '', font: 0, color: '#ffffff', libraryPick: null,
-  occasion: null, name: '', month: 7, day: null, vibe: 0, animation: 0,
+  occasion: null, name: '', month: 7, day: null, theme: null, effect: 'none',
   format: null, promptOpen: null, ask: '', prompt: null, delivery: null, destination: null, firstName: '',
   overlay: { kind: 'none' },
 }
@@ -86,8 +86,8 @@ export type Action =
   | { type: 'setName'; name: string }
   | { type: 'setMonth'; month: number }
   | { type: 'setDay'; day: number }
-  | { type: 'setVibe'; index: number }
-  | { type: 'setAnimation'; index: number }
+  | { type: 'setTheme'; theme: string | null }
+  | { type: 'setEffect'; effect: string }
   | { type: 'setFormat'; format: Format }
   | { type: 'togglePromptSection'; index: number }
   | { type: 'setAsk'; ask: string }
@@ -122,8 +122,8 @@ export function reduce(s: State, a: Action): State {
       return { ...s, month: a.month, day: s.day !== null && s.day > days ? days : s.day, overlay: { kind: 'calendar', months: false } }
     }
     case 'setDay': return { ...s, day: a.day }
-    case 'setVibe': return { ...s, vibe: a.index }
-    case 'setAnimation': return { ...s, animation: a.index }
+    case 'setTheme': return { ...s, theme: a.theme }
+    case 'setEffect': return { ...s, effect: a.effect }
     case 'setFormat': return { ...s, format: a.format }
     case 'togglePromptSection': return { ...s, promptOpen: s.promptOpen === a.index ? null : a.index }
     case 'setAsk': return { ...s, ask: a.ask, prompt: a.ask || null }

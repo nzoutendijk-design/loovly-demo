@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokéball — Loovly effect (mobile 390x845)</title>
+<link rel="stylesheet" href="../fx/fx.css">
+<style>
+  html,body{height:100%}
+  /* the gray is a viewing mat only — the effect layer itself is transparent */
+  body{margin:0;background:#818181;overflow:hidden;display:grid;place-items:center}
+  .stage{position:relative;width:390px;height:845px;overflow:hidden;outline:1px dashed rgba(0,0,0,.35);background:none}
+  .stage .phone-scr{position:relative;z-index:1;width:100%;height:100%}
+  .stage .fxroot{position:static}
+  .stage .pb{animation-duration:9.6s !important;--fd:9.6s !important}
+  .stage .fx-pokeball.fx-front .pb:nth-child(1){left:6% !important;width:45px !important;animation-delay:0s !important;--fdl:0s !important}
+  .stage .fx-pokeball.fx-back .pb:nth-child(1){left:55% !important;width:39.6px !important;animation-delay:-1.6s !important;--fdl:-1.6s !important}
+  .stage .fx-pokeball.fx-front .pb:nth-child(2){left:30% !important;width:46.7px !important;animation-delay:-3.2s !important;--fdl:-3.2s !important}
+  .stage .fx-pokeball.fx-back .pb:nth-child(2){left:76% !important;width:41.3px !important;animation-delay:-4.8s !important;--fdl:-4.8s !important}
+  .stage .fx-pokeball.fx-front .pb:nth-child(3){left:16% !important;width:43.1px !important;animation-delay:-6.4s !important;--fdl:-6.4s !important}
+  .stage .fx-pokeball.fx-back .pb:nth-child(3){left:64% !important;width:48.5px !important;animation-delay:-8s !important;--fdl:-8s !important}
+</style>
+</head>
+<body>
+<div class="stage phone-body">
+  <div class="phone-scr"><i class="cin-art" style="display:none"></i></div>
+  <div class="fxroot"></div>
+</div>
+<script src="../fx/fx.js"></script>
+<script>
+const idx=LoovlyFX.EFFECTS.findIndex(e=>e.id==="pokeball");
+document.querySelectorAll(".fxroot").forEach(el=>LoovlyFX.mount(el,idx));
+const cf=document.querySelector(".cardfx");if(cf)LoovlyFX.mountCard(cf,idx);
+const st=document.querySelector(".stage");
+function fit(){const s=Math.min(innerWidth*0.94/390,innerHeight*0.94/845);st.style.transform=`scale(${s})`;}
+addEventListener("resize",fit);fit();
+</script>
+</body>
+</html>

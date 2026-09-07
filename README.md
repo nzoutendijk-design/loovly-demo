@@ -21,6 +21,10 @@ No design changes were made; no features beyond click-through navigation were ad
   **Caveat** 700 (SIL Open Font License).
 - Card artwork, photos, icons and the iOS keyboard are exported straight from the Figma file into
   `public/assets/` (photos downscaled to ≤1200 px for the web).
+- **Themes and effects** come from the client's handoff package: 115 theme backgrounds in
+  `public/themes/` (mobile 1×/2×/3× and web crops, ~65 MB) and the 20 LOV.DESIGN screen effects in
+  `public/fx/` (`fx.js` as delivered, `fx.css` scoped under `.fx-host` by `npm run fx`). The raw
+  package files live in `vendor/loovly-handoff/`.
 
 ## Run it locally
 
@@ -35,7 +39,8 @@ Open the URL on your Mac, or on an iPhone on the same Wi-Fi via `npm run dev -- 
 
 ```bash
 npm run build        # static site in dist/ — drop it on any static host
-npm run bundle       # dist/loovly-demo.html — a single self-contained file (assets inlined)
+npm run bundle       # dist/loovly-demo.html — a single self-contained file (assets + 1× themes + effects inlined)
+npm run fx           # regenerate public/fx from vendor/loovly-handoff after a package update
 ```
 
 `dist/` uses relative paths, so it works from a sub-folder (GitHub Pages, Netlify, S3, a shared
@@ -75,6 +80,8 @@ src/
   Screen.tsx       the shared background, page transitions, and the create screen with its sheets
   pages.tsx        campaign, landing, fork, account, where, pay, on its way, the room
   motion.ts        timing and easing presets
+  themes.ts/json   the 115 theme backgrounds
+  effects.ts       the 20 LoovlyFX effects and the runtime's API type
   components.tsx   shared pieces: background, nav, card, chips, hostbar, overlays, sheets…
   styles.css       all styling, in Figma frame units
 public/

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claw machine — Loovly effect (mobile 390x845)</title>
+<link rel="stylesheet" href="../fx/fx.css">
+<style>
+  html,body{height:100%}
+  /* the gray is a viewing mat only — the effect layer itself is transparent */
+  body{margin:0;background:#818181;overflow:hidden;display:grid;place-items:center}
+  .stage{position:relative;width:390px;height:845px;overflow:hidden;outline:1px dashed rgba(0,0,0,.35);background:none}
+  .stage .phone-scr{position:relative;z-index:1;width:100%;height:100%}
+  .stage .fxroot{position:static}
+</style>
+</head>
+<body>
+<div class="stage phone-body">
+  <div class="phone-scr"><i class="cin-art" style="display:none"></i></div>
+  <div class="fxroot"></div>
+</div>
+<script src="../fx/fx.js"></script>
+<script>
+const idx=LoovlyFX.EFFECTS.findIndex(e=>e.id==="claw");
+document.querySelectorAll(".fxroot").forEach(el=>LoovlyFX.mount(el,idx));
+const cf=document.querySelector(".cardfx");if(cf)LoovlyFX.mountCard(cf,idx);
+const st=document.querySelector(".stage");
+function fit(){const s=Math.min(innerWidth*0.94/390,innerHeight*0.94/845);st.style.transform=`scale(${s})`;}
+addEventListener("resize",fit);fit();
+</script>
+</body>
+</html>

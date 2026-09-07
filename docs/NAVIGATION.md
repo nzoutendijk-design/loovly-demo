@@ -26,7 +26,8 @@ is rendered as the current screen. Every control changes that state from whereve
 | Any occasion · the name field · any day · a format · a prompt | set the value; ✕ or return closes the sheet |
 | August ▾ | opens a month grid; the calendar and the chip follow the chosen month |
 | Your own ask | real typing; the sheet lifts while the keyboard is up |
-| VIBE / ANIMATIONS tabs | open (or close) their tray; thumbnails select |
+| VIBE tab | opens the theme tray: 115 backgrounds in four categories (Basic · Complex · Photo · Illustration); a tile sets the screen background everywhere, None restores the default |
+| ANIMATIONS tab | opens the effects tray: the 20 LOV.DESIGN screen effects, running live over the card; None clears |
 | Done | continues to the digital-versus-printed fork |
 | Fork cards · destination rows | select; Continue moves on |
 | First name · Text me a code | real typing; goes to the address step (printed) or straight to the room (digital) |
@@ -68,7 +69,15 @@ presented. Off the sequence the caption reads “free navigation”; ←/→ jum
   keyboard and photo library slide up as their own layers. Nothing cross-fades through anything.
 - Reduce Motion is honoured (instant switches).
 
+## Themes and effects
+
+Both come from the client's handoff package (`loovly-handoff.vercel.app`, September 2026 build):
+
+- **Themes** — `public/themes/mobile/<category>/<slug>/bg@{1,2,3}x.webp` (390×845 crops, picked by device pixel ratio) and `public/themes/web/…` (16:9 crops, kept for a future desktop layout). Index in `src/themes.json`.
+- **Effects** — `public/fx/fx.js` is the package's `LoovlyFX` bundle as delivered; `public/fx/fx.css` is generated from the package stylesheet by `npm run fx`, scoped under `.fx-host` so it cannot restyle the app. Timing and easing are the package's own. `src/effects.ts` lists the ids; `EffectHost` in `src/components.tsx` mounts through the documented API (`mount`, `mountCard` for the two card-bound effects, `unmount`).
+- The effect layer sits above the card and chips and below trays, hostbar and sheets. Scratch-off is interactive (rub the card).
+
 ## Not in the file yet (drawn by me, see DESIGN-NOTES.md)
 
-Month grid in the calendar · expanded/collapsed ask-wall sections · typing states of every field ·
+Theme tray category filters and tile labels · effect tray glyph tiles (no thumbnail art delivered) · month grid in the calendar · expanded/collapsed ask-wall sections · typing states of every field ·
 selected states for fork cards and destination rows · the digital-only path skipping the address step.
