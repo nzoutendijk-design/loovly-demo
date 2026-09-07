@@ -7,8 +7,10 @@ import {
   Overlay, Tabs, ImageGrid, UploadCta, TypeField, FontChips, ColorChips, Segmented, Keyboard,
   PhotoLibrary, SheetHeading, Note, OccasionChips, Calendar,
 } from './components'
+import { AnimatePresence, motion } from 'framer-motion'
 import { zodiac } from './state'
 import type { Action, Overlay as OverlayState, State } from './state'
+import { fade, rise } from './motion'
 
 export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
   const ov = s.overlay
@@ -20,7 +22,7 @@ export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
   const caption = s.text || undefined
 
   const chips = !editor && (
-    <>
+    <motion.div className="layer" key="chips" {...fade}>
       <Description />
       <DetailChips
         occasion={s.occasion}
@@ -33,71 +35,89 @@ export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
           if (k === 'when') open({ kind: 'calendar' })
         }}
       />
-    </>
+    </motion.div>
   )
 
   const hostbar = showHostbar && (
     <HostBar
+      key="hostbar"
       onVibe={() => (ov.kind === 'tray' && ov.tab === 'vibe' ? close() : open({ kind: 'tray', tab: 'vibe' }))}
       onAnimations={() => (ov.kind === 'tray' && ov.tab === 'animations' ? close() : open({ kind: 'tray', tab: 'animations' }))}
       onDone={() => act({ type: 'done' })}
     />
   )
 
+  const picker = ov.kind === 'image' || ov.kind === 'type'
+
   return (
     <>
       <Background />
-      {showHostbar && <BottomGradient />}
+      <AnimatePresence initial={false}>{showHostbar && <BottomGradient key="gradient" />}</AnimatePresence>
       <Nav />
       <Title />
-      {ov.kind !== 'library' && <Card src={s.card} caption={caption} color={s.color} onPencil={() => open({ kind: 'image' })} />}
-      {chips}
-      {ov.kind === 'tray' && (
-        <Tray
-          label={ov.tab === 'vibe' ? 'Vibe' : 'Animations'}
-          selected={ov.tab === 'vibe' ? s.vibe : s.animation}
-          onSelect={(i) => act(ov.tab === 'vibe' ? { type: 'setVibe', index: i } : { type: 'setAnimation', index: i })}
-        />
-      )}
-      {hostbar}
+      <Card src={s.card} caption={caption} color={s.color} onPencil={() => open({ kind: 'image' })} />
+      <AnimatePresence initial={false}>{chips}</AnimatePresence>
+      <AnimatePresence initial={false}>
+        {ov.kind === 'tray' && (
+          <Tray
+            key="tray"
+            label={ov.tab === 'vibe' ? 'Vibe' : 'Animations'}
+            selected={ov.tab === 'vibe' ? s.vibe : s.animation}
+            onSelect={(i) => act(ov.tab === 'vibe' ? { type: 'setVibe', index: i } : { type: 'setAnimation', index: i })}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence initial={false}>{hostbar}</AnimatePresence>
 
-      {ov.kind === 'image' && (
-        <>
-          <Overlay kind="picker">
+      {/* Image / Type picker: one shared blurred backdrop, the tab contents cross-fade */}
+      <AnimatePresence initial={false}>
+        {picker && (
+          <Overlay key="picker" kind="picker">
             <CloseX x={24} y={88} onClick={close} />
-            <Tabs active="image" onType={() => open({ kind: 'type', mode: 'aa' })} />
+            <Tabs active={ov.kind === 'image' ? 'image' : 'type'} onImage={() => open({ kind: 'image' })} onType={() => open({ kind: 'type', mode: 'aa' })} />
           </Overlay>
-          <ImageGrid onPick={(card) => act({ type: 'pickTile', card })} />
-          <UploadCta onClick={() => open({ kind: 'library' })} />
-        </>
-      )}
+        )}
+        {ov.kind === 'image' && (
+          <motion.div className="layer" key="image" {...rise}>
+            <ImageGrid onPick={(card) => act({ type: 'pickTile', card })} />
+            <UploadCta onClick={() => open({ kind: 'library' })} />
+          </motion.div>
+        )}
+        {ov.kind === 'type' && (
+          <motion.div className="layer layer-ov" key="type" {...fade}>
+            <TypeField value={s.text || 'Enter'} placeholder={!s.text} onClick={() => act({ type: 'typeText' })} />
+            <AnimatePresence initial={false}>
+              {ov.mode === 'aa' ? (
+                <motion.div className="layer layer-ov" key="aa" {...fade}>
+                  <FontChips selected={s.font} onSelect={(font) => act({ type: 'setFont', font })} />
+                </motion.div>
+              ) : (
+                <motion.div className="layer layer-ov" key="color" {...fade}>
+                  <ColorChips selected={s.color} onSelect={(color) => act({ type: 'setColor', color })} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <Segmented active={ov.mode} onAa={() => act({ type: 'setMode', mode: 'aa' })} onColor={() => act({ type: 'setMode', mode: 'color' })} />
+            <Keyboard onReturn={close} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {ov.kind === 'library' && (
-        <PhotoLibrary
-          selected={s.libraryPick}
-          onClose={() => open({ kind: 'image' })}
-          onPhoto={(index) => act({ type: 'pickPhoto', index })}
-          onConfirm={() => act({ type: 'confirmPhoto' })}
-        />
-      )}
+      <AnimatePresence initial={false}>
+        {ov.kind === 'library' && (
+          <PhotoLibrary
+            key="library"
+            selected={s.libraryPick}
+            onClose={() => open({ kind: 'image' })}
+            onPhoto={(index) => act({ type: 'pickPhoto', index })}
+            onConfirm={() => act({ type: 'confirmPhoto' })}
+          />
+        )}
+      </AnimatePresence>
 
-      {ov.kind === 'type' && (
-        <Overlay kind="picker">
-          <CloseX x={24} y={88} onClick={close} />
-          <Tabs active="type" onImage={() => open({ kind: 'image' })} />
-          <TypeField value={s.text || 'Enter'} placeholder={!s.text} onClick={() => act({ type: 'typeText' })} />
-          {ov.mode === 'aa' ? (
-            <FontChips selected={s.font} onSelect={(font) => act({ type: 'setFont', font })} />
-          ) : (
-            <ColorChips selected={s.color} onSelect={(color) => act({ type: 'setColor', color })} />
-          )}
-          <Segmented active={ov.mode} onAa={() => act({ type: 'setMode', mode: 'aa' })} onColor={() => act({ type: 'setMode', mode: 'color' })} />
-          <Keyboard onReturn={close} />
-        </Overlay>
-      )}
-
+      <AnimatePresence initial={false}>
       {ov.kind === 'occasion' && (
-        <Overlay kind="sheet">
+        <Overlay key="occasion" kind="sheet">
           <CloseX x={24} y={494} onClick={close} />
           <SheetHeading x={24} y={543.86}>What occasion is this card for?</SheetHeading>
           <OccasionChips selected={s.occasion} onSelect={(occasion) => act({ type: 'setOccasion', occasion })} />
@@ -108,7 +128,7 @@ export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
       )}
 
       {ov.kind === 'name' && (
-        <Overlay kind="sheet">
+        <Overlay key="name" kind="sheet">
           <CloseX x={24} y={279} onClick={close} />
           <SheetHeading x={24} y={316}>What occasion is this card for?</SheetHeading>
           <TypeField className="name-field" value={s.name ?? 'Enter'} placeholder={!s.name} onClick={() => act({ type: 'typeName' })} />
@@ -120,15 +140,16 @@ export function Screen({ s, act }: { s: State; act: (a: Action) => void }) {
       )}
 
       {ov.kind === 'calendar' && (
-        <>
-          <Overlay kind="calendar">
-            <CloseX x={25} y={357} onClick={close} />
-            <SheetHeading x={24} y={395}>When will the card be opened?</SheetHeading>
-            <Calendar selected={s.day ?? 27} onDay={(day) => act({ type: 'setDay', day })} />
-          </Overlay>
-          <Note x={73} y={791} w={240}>{`${s.name ?? 'This one'} has ${zodiac(s.day ?? 27)} energy!`}</Note>
-        </>
+        <Overlay key="calendar" kind="calendar">
+          <CloseX x={25} y={357} onClick={close} />
+          <SheetHeading x={24} y={395}>When will the card be opened?</SheetHeading>
+          <Calendar selected={s.day ?? 27} onDay={(day) => act({ type: 'setDay', day })} />
+        </Overlay>
       )}
+      {ov.kind === 'calendar' && (
+        <Note key="calendar-note" x={73} y={791} w={240}>{`${s.name ?? 'This one'} has ${zodiac(s.day ?? 27)} energy!`}</Note>
+      )}
+      </AnimatePresence>
     </>
   )
 }

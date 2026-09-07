@@ -101,7 +101,7 @@ p, h1 { margin: 0; }
 .overlay-calendar { background: linear-gradient(180deg, rgba(102,102,102,0) 2.204%, rgba(0,0,0,.9) 94.2%); }
 
 .tabs { position: absolute; left: 23.59px; top: 127.5px; display: flex; }
-.tab { height: 35.8px; display: flex; align-items: center; justify-content: center; font: 400 16px/21px var(--geist); letter-spacing: .1378px; color: #fff; border-bottom: 1.148px solid rgba(255,255,255,.1); }
+.tab { height: 35.8px; display: flex; align-items: center; justify-content: center; font: 400 16px/21px var(--geist); letter-spacing: .1378px; color: #fff; border-bottom: 1.148px solid rgba(255,255,255,.1); transition: width .28s cubic-bezier(.32,.72,0,1), border-color .2s, font-weight .2s; }
 .tab.on { font-weight: 500; border-bottom: 1.2px solid #fff; }
 
 /* image picker grid (frame coords) */
@@ -120,7 +120,7 @@ p, h1 { margin: 0; }
 .color-chip.picker { background: #fff; }
 .color-chip i { display: block; height: 24.89px; border-radius: 8px; }
 .segmented { position: absolute; left: 83px; top: 470px; width: 223.39px; height: 38px; border-radius: 8px; background: rgba(255,255,255,.2); }
-.seg-pill { position: absolute; top: 5.76px; width: 103.35px; height: 26.485px; border-radius: 8px; background: rgba(255,255,255,.3); }
+.seg-pill { position: absolute; top: 5.76px; width: 103.35px; height: 26.485px; border-radius: 8px; background: rgba(255,255,255,.3); transition: left .28s cubic-bezier(.32,.72,0,1); }
 .seg-label { position: absolute; top: 5.76px; width: 103.35px; height: 26.485px; display: flex; align-items: center; justify-content: center; font: 500 14px/18px var(--geist); letter-spacing: .1587px; color: #fff; }
 .keyboard { position: absolute; left: 0; top: 536px; width: 390px; height: 325.97px; }
 .keyboard img { width: 390px; height: 325.97px; }
@@ -139,6 +139,7 @@ p, h1 { margin: 0; }
 .lib-row { display: flex; gap: 1.773px; }
 .lib-cell { position: relative; flex: 1 0 0; aspect-ratio: 1; overflow: hidden; }
 .lib-cell img { width: 100%; height: 100%; object-fit: cover; }
+.lib-selected { position: absolute; inset: 0; pointer-events: none; }
 .lib-dim { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
 .lib-ck-circle { position: absolute !important; left: 105px; top: 5.23px; width: 19px !important; height: 19px !important; }
 .lib-ck { position: absolute !important; left: 108px; top: 8.23px; width: 14px !important; height: 14px !important; }
@@ -161,7 +162,10 @@ p, h1 { margin: 0; }
 .cal-row { display: flex; gap: 1.787px; }
 .cal-cell { flex: 1 0 0; height: 33.67px; display: flex; align-items: center; justify-content: center; border-radius: 16px; font: 400 12px/15px var(--geist); color: #fff; }
 .cal-wd { font-weight: 600; color: rgba(255,255,255,.4); }
-.cal-cell.sel { background: #fff; color: #000; }
+.cal-cell { position: relative; }
+.cal-cell.sel { color: #000; }
+.cal-sel-pill { position: absolute; inset: 0; border-radius: 16px; background: #fff; }
+.cal-day { position: relative; }
 
 /* ------------------------------------------------------------------ interaction states
    The Figma file defines no hover / pressed variants, so these follow its glass language:
@@ -191,7 +195,7 @@ button:disabled { cursor: default; }
   .thumb.on:hover::after { box-shadow: inset 0 0 0 1px #fff; }
   .seg-label:hover { background: rgba(255,255,255,.12); border-radius: 8px; }
   .cal-cell:not(:disabled):hover { background: rgba(255,255,255,.14); }
-  .cal-cell.sel:hover { background: #fff; }
+  .cal-cell.sel:hover { background: transparent; }
   .lib-round:hover { box-shadow: 0 0 18.86px rgba(0,0,0,.22); }
   .lib-check:hover { background: #2590f5; }
   .lib-seg button:hover { background: #ededed; }
@@ -213,7 +217,7 @@ button:disabled { cursor: default; }
 .thumb:active { transform: scale(.92); }
 .seg-label:active { background: rgba(255,255,255,.18); border-radius: 8px; }
 .cal-cell:not(:disabled):active { background: rgba(255,255,255,.22); }
-.cal-cell.sel:active { background: #e8e8e8; }
+.cal-cell.sel:active { background: transparent; }
 .lib-check:active { background: #1f7fe0; }
 .lib-seg button:active { background: #e2e2e2; }
 .lib-cell:active img { filter: brightness(.78); transform: scale(.97); }
@@ -233,3 +237,11 @@ button:disabled { cursor: default; }
 .color-chip.on { box-shadow: inset 0 0 0 1.5px #fff; }
 .color-chip input[type="color"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
 .thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 .84px rgba(255,255,255,.7); }
+
+/* ------------------------------------------------------------------ motion layers */
+.layer { position: absolute; left: 0; top: 0; width: 390px; height: 845px; pointer-events: none; }
+.layer-ov { top: -17px; height: 862px; }             /* same coordinate space as .overlay */
+.layer-tray { height: 693px; overflow: hidden; }      /* the tray slides in from behind the hostbar */
+.layer > *, .sheet-content > * { pointer-events: auto; }
+.layer > .layer { pointer-events: none; }
+.sheet-content { position: absolute; inset: 0; pointer-events: none; }

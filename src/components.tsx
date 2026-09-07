@@ -4,7 +4,9 @@
  */
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { PHOTOS } from './state'
+import { fade, rise, slideUp } from './motion'
 
 /** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
 declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
@@ -96,7 +98,7 @@ export function Description() {
 }
 
 export function BottomGradient() {
-  return <div className="bottom-gradient" />
+  return <motion.div className="bottom-gradient" {...fade} />
 }
 
 export function CloseX({ x, y, onClick }: { x: number; y: number; onClick?: () => void }) {
@@ -121,8 +123,16 @@ export function Card({ src, caption, color, onPencil }: { src: string; caption?:
   const crop = CROPS[src]
   return (
     <div className="card">
-      {crop ? <img className="card-img" style={crop} src={A(src)} alt="" /> : <img className="card-fill" src={A(src)} alt="" />}
-      {caption && <span className="card-caption" style={{ color }}>{caption}</span>}
+      <AnimatePresence initial={false}>
+        {crop ? (
+          <motion.img key={src} className="card-img" style={crop} src={A(src)} alt="" {...fade} />
+        ) : (
+          <motion.img key={src} className="card-fill" src={A(src)} alt="" {...fade} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence initial={false}>
+        {caption && <motion.span key="caption" className="card-caption" style={{ color }} {...fade}>{caption}</motion.span>}
+      </AnimatePresence>
       <button className="card-pencil" onClick={onPencil} aria-label="Edit card">
         <img src={A('card-pencil-bg.svg')} alt="" style={{ left: 0, top: 0, width: 40, height: 40 }} />
         <img src={A('card-pencil.svg')} alt="" style={{ left: 0.32, top: 0, width: 39.04, height: 39.04 }} />
@@ -155,16 +165,18 @@ export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
   const tops = [531, 571, 611]
   return (
     <>
-      {rows.map((row, i) => (
-        <div className="chip-row" style={{ top: tops[i] }} key={i}>
-          {row.map((c) => (
-            <button className="chip" key={c.key} onClick={onChip ? () => onChip(c.key) : undefined}>
-              <img src={A(c.icon)} alt="" style={{ width: c.w, height: c.h }} />
-              <span>{c.label}</span>
-            </button>
-          ))}
-        </div>
-      ))}
+      <AnimatePresence initial={false}>
+        {rows.map((row, i) => (
+          <motion.div className="chip-row" style={{ top: tops[i] }} key={i} {...fade}>
+            {row.map((c) => (
+              <button className="chip" key={c.key} onClick={onChip ? () => onChip(c.key) : undefined}>
+                <img src={A(c.icon)} alt="" style={{ width: c.w, height: c.h }} />
+                <motion.span key={c.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>{c.label}</motion.span>
+              </button>
+            ))}
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </>
   )
 }
@@ -173,7 +185,7 @@ export function DetailChips({ occasion, who, when, onChip, rowsVisible = 3 }: {
 
 export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: () => void; onAnimations?: () => void; onSetting?: () => void; onDone?: () => void }) {
   return (
-    <div className="hostbar">
+    <motion.div className="hostbar" {...fade}>
       <button className="host-tab" style={{ left: 28 }} onClick={onVibe}>
         <img src={A('icon-vibe.svg')} alt="" />
         <span>VIBE</span>
@@ -189,7 +201,7 @@ export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: 
       <button className="cta" style={{ top: 81 }} onClick={onDone}>
         Done
       </button>
-    </div>
+    </motion.div>
   )
 }
 
@@ -198,9 +210,11 @@ const VIBES = ['vibe-1.jpg', 'vibe-2.jpg', 'vibe-2.jpg', 'vibe-3.jpg', 'vibe-4.j
 export function Tray({ label, selected, onSelect }: { label: string; selected: number; onSelect?: (i: number) => void }) {
   const strip = useDragScroll()
   return (
-    <>
+    <motion.div className="layer layer-tray" {...slideUp(124)}>
       <div className="tray">
-        <span className="tray-label">{label}</span>
+        <AnimatePresence initial={false}>
+          <motion.span key={label} className="tray-label" {...fade}>{label}</motion.span>
+        </AnimatePresence>
       </div>
       <div className="tray-thumbs" ref={strip}>
         {VIBES.map((v, i) => (
@@ -209,14 +223,18 @@ export function Tray({ label, selected, onSelect }: { label: string; selected: n
           </button>
         ))}
       </div>
-    </>
+    </motion.div>
   )
 }
 
 /* ----------------------------------------------------------------- blurred "Bottom Bars" overlay */
 
 export function Overlay({ kind, children }: { kind: 'picker' | 'sheet' | 'calendar'; children?: ReactNode }) {
-  return <div className={'overlay overlay-' + kind}>{children}</div>
+  return (
+    <motion.div className={'overlay overlay-' + kind} {...fade}>
+      <motion.div className="sheet-content" {...rise}>{children}</motion.div>
+    </motion.div>
+  )
 }
 
 export function Tabs({ active, onImage, onType }: { active: 'image' | 'type'; onImage?: () => void; onType?: () => void }) {
@@ -336,10 +354,10 @@ export function Segmented({ active, onAa, onColor }: { active: 'aa' | 'color'; o
 
 export function Keyboard({ onReturn }: { onReturn?: () => void }) {
   return (
-    <div className="keyboard">
+    <motion.div className="keyboard" {...slideUp(326)}>
       <img src={A('keyboard@3x.png')} alt="" />
       <button className="key-return" onClick={onReturn} aria-label="return" />
-    </div>
+    </motion.div>
   )
 }
 
@@ -348,7 +366,7 @@ export function Keyboard({ onReturn }: { onReturn?: () => void }) {
 export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { selected: number | null; onClose?: () => void; onPhoto?: (i: number) => void; onConfirm?: () => void }) {
   const rows = Array.from({ length: PHOTOS.length / 3 }, (_, r) => PHOTOS.slice(r * 3, r * 3 + 3))
   return (
-    <div className="library">
+    <motion.div className="library" {...slideUp(800)}>
       <div className="lib-header">
         <button className="lib-round" onClick={onClose} aria-label="Close">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -374,20 +392,22 @@ export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { select
               return (
                 <button className="lib-cell" key={p} onClick={onPhoto ? () => onPhoto(i) : undefined} aria-pressed={on}>
                   <img src={A(p)} alt="" />
-                  {on && (
-                    <>
-                      <span className="lib-dim" />
-                      <img className="lib-ck-circle" src={A('photo-check-circle.svg')} alt="" />
-                      <img className="lib-ck" src={A('photo-check.svg')} alt="" />
-                    </>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {on && (
+                      <motion.span key="check" className="lib-selected" {...fade}>
+                        <span className="lib-dim" />
+                        <img className="lib-ck-circle" src={A('photo-check-circle.svg')} alt="" />
+                        <img className="lib-ck" src={A('photo-check.svg')} alt="" />
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
               )
             })}
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -403,9 +423,9 @@ export function SheetHeading({ x, y, children }: { x: number; y: number; childre
 
 export function Note({ x, y, w, children }: { x: number; y: number; w: number; children: ReactNode }) {
   return (
-    <p className="note" style={{ left: x, top: y, width: w }}>
+    <motion.p className="note" style={{ left: x, top: y, width: w }} {...fade}>
       {children}
-    </p>
+    </motion.p>
   )
 }
 
@@ -479,7 +499,8 @@ export function Calendar({ selected, onDay }: { selected: number; onDay?: (d: nu
                 disabled={d === null}
                 aria-pressed={d === selected}
               >
-                {d ?? ''}
+                {d === selected && <motion.span className="cal-sel-pill" layoutId="cal-sel" transition={{ type: 'spring', stiffness: 500, damping: 40 }} />}
+                <span className="cal-day">{d ?? ''}</span>
               </button>
             ))}
           </div>

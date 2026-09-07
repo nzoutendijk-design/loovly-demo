@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { MotionConfig } from 'framer-motion'
 import { Screen } from './Screen'
 import { asset } from './components'
 import { PHOTOS, PRESETS, initial, matchPreset, reduce } from './state'
@@ -92,6 +93,7 @@ export default function App() {
   const boxH = desktop ? H + 24 : H
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className={'viewport' + (desktop ? ' desktop' : '')} ref={viewportRef}>
       <div
         className="stage-box"
@@ -121,6 +123,7 @@ export default function App() {
         </div>
       )}
     </div>
+    </MotionConfig>
   )
 }
 
