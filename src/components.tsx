@@ -281,7 +281,7 @@ export function EffectTray({ selected, onSelect }: { selected: string; onSelect?
  * a `.phone-body` host with the `.cin-art` marker, a `.fxroot` layer, and for the two
  * card-bound effects (tape, scratch) a `.cardfx` anchor placed exactly over the card.
  */
-export function EffectHost({ effect, card }: { effect: string; card: { left: number; top: number; width: number; height: number } }) {
+export function EffectHost({ effect, card, inkDark }: { effect: string; card: { left: number; top: number; width: number; height: number }; inkDark?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const cardfx = useRef<HTMLDivElement>(null)
   const meta = EFFECTS.find((e) => e.id === effect)
@@ -300,7 +300,8 @@ export function EffectHost({ effect, card }: { effect: string; card: { left: num
   }, [effect, bound])
   if (effect === 'none') return null
   return (
-    <div className="fx-host phone-body" data-effect={effect}>
+    <div className="fx-host" data-effect={effect}>
+      <div className={'phone-body dark' + (inkDark ? ' type-dark' : '')}>
       <div className="phone-scr">
         {bound ? (
           <div className={(effect === 'tape' ? 'tapebox' : 'scratchbox') + ' cin-art'} style={card}><div className="cardfx" ref={cardfx} /></div>
@@ -309,6 +310,7 @@ export function EffectHost({ effect, card }: { effect: string; card: { left: num
         )}
       </div>
       <div className="fxroot" ref={root} />
+      </div>
     </div>
   )
 }

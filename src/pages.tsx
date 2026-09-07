@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Card, Cta, EffectHost, Nav, OptionRow, StatusPill, Table, TextInput, TopGradient, asset as A } from './components'
 import { enter } from './motion'
 import { MONTHS, ordinal } from './state'
+import { inkDarkFor } from './themes'
 import type { Action, State } from './state'
 
 type P = { s: State; act: (a: Action) => void }
@@ -168,7 +169,7 @@ export function Room({ s, act }: P) {
         </div>
         <StatusPill label="LOCKED" x={139} y={183} />
       </motion.div>
-      <EffectHost effect={s.effect} card={{ left: 76, top: 167, width: 238, height: 317 }} />
+      <EffectHost effect={s.effect} card={{ left: 76, top: 167, width: 238, height: 317 }} inkDark={inkDarkFor(s.theme)} />
       <motion.div className="layer" {...E(1)}>
         <button className="card-pencil room-pencil" onClick={go(act, 'create')} aria-label="Edit card">
           <img src={A('card-pencil-bg.svg')} alt="" style={{ left: 0, top: 0, width: 40, height: 40 }} />

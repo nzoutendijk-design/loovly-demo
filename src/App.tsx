@@ -3,6 +3,7 @@ import { MotionConfig } from 'framer-motion'
 import { Screen } from './Screen'
 import { asset } from './components'
 import { PHOTOS, PRESETS, initial, matchPreset, reduce } from './state'
+import { inkDarkFor } from './themes'
 
 const N = PRESETS.length
 const W = 390
@@ -106,7 +107,7 @@ export default function App() {
             if (Math.abs(dx) > 70 && Math.abs(dy) < 60) step(dx < 0 ? 1 : -1)
           }}
         >
-          <div className="stage" data-screen={matched ?? ''} data-figma-node={preset?.node ?? ''} data-page={s.page} data-overlay={s.overlay.kind}>
+          <div className={'stage' + (s.page !== 'campaign' && inkDarkFor(s.theme) ? ' type-dark' : '')} data-screen={matched ?? ''} data-figma-node={preset?.node ?? ''} data-page={s.page} data-overlay={s.overlay.kind}>
             <Screen s={s} act={dispatch} />
           </div>
         </div>

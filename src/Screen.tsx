@@ -11,6 +11,7 @@ import {
 import { Account, Campaign, Fork, Landing, Pay, Room, Sent, Where } from './pages'
 import { enter, fade, page as pageMotion } from './motion'
 import { FORMATS, MONTHS, dateLabel, zodiac } from './state'
+import { inkDarkFor } from './themes'
 import type { Action, Overlay as OverlayState, State } from './state'
 
 const E = (i: number) => ({ variants: enter, custom: i, initial: 'hidden' as const, animate: 'shown' as const })
@@ -84,7 +85,7 @@ function Create({ s, act }: { s: State; act: (a: Action) => void }) {
           )}
         </AnimatePresence>
       </motion.div>
-      <EffectHost effect={s.effect} card={CARD_RECT} />
+      <EffectHost effect={s.effect} card={CARD_RECT} inkDark={inkDarkFor(s.theme)} />
       <AnimatePresence initial={false}>
         {ov.kind === 'tray' && ov.tab === 'vibe' && <ThemeTray key="tray-vibe" selected={s.theme} onSelect={(theme) => act({ type: 'setTheme', theme })} />}
         {ov.kind === 'tray' && ov.tab === 'animations' && <EffectTray key="tray-fx" selected={s.effect} onSelect={(effect) => act({ type: 'setEffect', effect })} />}

@@ -6,577 +6,923 @@
   {
    "slug": "apple-green",
    "name": "Apple Green",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#bde1b6",
+   "luma": 0.68,
+   "inkDark": true
   },
   {
    "slug": "heart",
    "name": "Heart",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#dfcee3",
+   "luma": 0.654,
+   "inkDark": true
   },
   {
    "slug": "gradient-glow",
    "name": "Gradient Glow",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#ceb9d8",
+   "luma": 0.528,
+   "inkDark": true
   },
   {
    "slug": "red",
    "name": "Red",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#780d13",
+   "luma": 0.043,
+   "inkDark": false
   },
   {
    "slug": "prism",
    "name": "Prism",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#f9f3ee",
+   "luma": 0.904,
+   "inkDark": true
   },
   {
    "slug": "rainbow",
    "name": "Rainbow",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#e3dfec",
+   "luma": 0.752,
+   "inkDark": true
   },
   {
    "slug": "pearl",
    "name": "Pearl",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#c3ab94",
+   "luma": 0.429,
+   "inkDark": true
   },
   {
    "slug": "rose-fun",
    "name": "Rose fun",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#ac9e91",
+   "luma": 0.353,
+   "inkDark": true
   },
   {
    "slug": "sorbet",
    "name": "Sorbet",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#f8e8dd",
+   "luma": 0.829,
+   "inkDark": true
   },
   {
    "slug": "rose",
    "name": "Rose",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#fea9b0",
+   "luma": 0.526,
+   "inkDark": true
   },
   {
    "slug": "tulip",
    "name": "Tulip",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#d5ada2",
+   "luma": 0.466,
+   "inkDark": true
   },
   {
    "slug": "pink-hearts",
    "name": "Pink Hearts",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#d7b3c9",
+   "luma": 0.509,
+   "inkDark": true
   },
   {
    "slug": "ribbon",
    "name": "Ribbon",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#fdcbe2",
+   "luma": 0.691,
+   "inkDark": true
   },
   {
    "slug": "flowers",
    "name": "Flowers",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#d4b5a5",
+   "luma": 0.498,
+   "inkDark": true
   },
   {
    "slug": "flowers-2",
    "name": "Flowers",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#daeaf4",
+   "luma": 0.803,
+   "inkDark": true
   },
   {
    "slug": "bubble-blur",
    "name": "Bubble + blur",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#5e88a5",
+   "luma": 0.227,
+   "inkDark": true
   },
   {
    "slug": "deep-ocean",
    "name": "Deep ocean",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#3e5062",
+   "luma": 0.076,
+   "inkDark": false
   },
   {
    "slug": "deep-flowers",
    "name": "deep flowers",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#494848",
+   "luma": 0.065,
+   "inkDark": false
   },
   {
    "slug": "ribbon-2",
    "name": "Ribbon",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#f485b5",
+   "luma": 0.393,
+   "inkDark": true
   },
   {
    "slug": "ribbon-3",
    "name": "Ribbon",
-   "category": "basic-gradient"
+   "category": "basic-gradient",
+   "ground": "#c95138",
+   "luma": 0.186,
+   "inkDark": true
   },
   {
    "slug": "grass-w-yellow",
    "name": "Grass w/ yellow",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#6e8207",
+   "luma": 0.193,
+   "inkDark": true
   },
   {
    "slug": "petal",
    "name": "Petal",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f2abc1",
+   "luma": 0.519,
+   "inkDark": true
   },
   {
    "slug": "leaf",
    "name": "Leaf",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#b8cab0",
+   "luma": 0.556,
+   "inkDark": true
   },
   {
    "slug": "glass-prism",
    "name": "glass prism",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#ecd9cc",
+   "luma": 0.718,
+   "inkDark": true
   },
   {
    "slug": "blurred-hearts",
    "name": "blurred hearts",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#e09aa2",
+   "luma": 0.416,
+   "inkDark": true
   },
   {
    "slug": "strong-rainbow",
    "name": "Strong rainbow",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#cda59e",
+   "luma": 0.424,
+   "inkDark": true
   },
   {
    "slug": "mist-in-the-blossom",
    "name": "mist in the blossom",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f2c389",
+   "luma": 0.597,
+   "inkDark": true
   },
   {
    "slug": "zigzag",
    "name": "zigzag",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#eceef2",
+   "luma": 0.854,
+   "inkDark": true
   },
   {
    "slug": "wavy-orange",
    "name": "wavy orange",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#d6bcb7",
+   "luma": 0.537,
+   "inkDark": true
   },
   {
    "slug": "tree-shadow",
    "name": "tree shadow",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#89a968",
+   "luma": 0.347,
+   "inkDark": true
   },
   {
    "slug": "sorbet-2",
    "name": "sorbet",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f1d6c3",
+   "luma": 0.707,
+   "inkDark": true
   },
   {
    "slug": "blooming",
    "name": "blooming",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f1d1d2",
+   "luma": 0.69,
+   "inkDark": true
   },
   {
    "slug": "grainy-orange",
    "name": "grainy orange",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#e8b681",
+   "luma": 0.522,
+   "inkDark": true
   },
   {
    "slug": "hermes",
    "name": "Hermes",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#804c50",
+   "luma": 0.103,
+   "inkDark": false
   },
   {
    "slug": "gazing",
    "name": "Gazing",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f8b7ce",
+   "luma": 0.583,
+   "inkDark": true
   },
   {
    "slug": "continuing-ripple",
    "name": "continuing ripple",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#bccce7",
+   "luma": 0.596,
+   "inkDark": true
   },
   {
    "slug": "sun-sea",
    "name": "sun & sea",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#b8b8d6",
+   "luma": 0.493,
+   "inkDark": true
   },
   {
    "slug": "sunset",
    "name": "sunset",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#ec6f50",
+   "luma": 0.298,
+   "inkDark": true
   },
   {
    "slug": "shine-prism",
    "name": "shine prism",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#e4ccdf",
+   "luma": 0.65,
+   "inkDark": true
   },
   {
    "slug": "orange-flowers",
    "name": "orange flowers",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#ecb382",
+   "luma": 0.517,
+   "inkDark": true
   },
   {
    "slug": "dots",
    "name": "dots",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#94a583",
+   "luma": 0.348,
+   "inkDark": true
   },
   {
    "slug": "mix",
    "name": "mix",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f0b8cb",
+   "luma": 0.571,
+   "inkDark": true
   },
   {
    "slug": "rainbow-fish",
    "name": "rainbow fish",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#b3bcdd",
+   "luma": 0.508,
+   "inkDark": true
   },
   {
    "slug": "rainbow-fish-2",
    "name": "rainbow fish",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#e6ad57",
+   "luma": 0.474,
+   "inkDark": true
   },
   {
    "slug": "cloud",
    "name": "cloud",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#588db2",
+   "luma": 0.243,
+   "inkDark": true
   },
   {
    "slug": "orange-tree",
    "name": "orange tree",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f2e7cf",
+   "luma": 0.805,
+   "inkDark": true
   },
   {
    "slug": "textured-red",
    "name": "textured red",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#839e9c",
+   "luma": 0.317,
+   "inkDark": true
   },
   {
    "slug": "furious",
    "name": "Furious",
-   "category": "complex-gradient"
+   "category": "complex-gradient",
+   "ground": "#f1c6ad",
+   "luma": 0.621,
+   "inkDark": true
   },
   {
    "slug": "friends",
    "name": "friends",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#ea9ac9",
+   "luma": 0.448,
+   "inkDark": true
   },
   {
    "slug": "party",
    "name": "Party",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#8f8b78",
+   "luma": 0.257,
+   "inkDark": true
   },
   {
    "slug": "pasta-1",
    "name": "Pasta 1",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#5e6868",
+   "luma": 0.133,
+   "inkDark": false
   },
   {
    "slug": "bubble",
    "name": "Bubble",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#5f8dad",
+   "luma": 0.245,
+   "inkDark": true
   },
   {
    "slug": "busy-barbie",
    "name": "busy barbie",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#2b221d",
+   "luma": 0.017,
+   "inkDark": false
   },
   {
    "slug": "princess-in-the-hole",
    "name": "princess in the hole",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#58504d",
+   "luma": 0.083,
+   "inkDark": false
   },
   {
    "slug": "coupon",
    "name": "Coupon",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#8c7b6d",
+   "luma": 0.208,
+   "inkDark": true
   },
   {
    "slug": "road",
    "name": "Road",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#485635",
+   "luma": 0.083,
+   "inkDark": false
   },
   {
    "slug": "soccer-ball-woman-s-shoe",
    "name": "Soccer ball & woman's shoe",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#534f3e",
+   "luma": 0.078,
+   "inkDark": false
   },
   {
    "slug": "tomato",
    "name": "Tomato",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#877776",
+   "luma": 0.197,
+   "inkDark": true
   },
   {
    "slug": "hamster",
    "name": "hamster",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#9ea08d",
+   "luma": 0.343,
+   "inkDark": true
   },
   {
    "slug": "night-yard",
    "name": "night yard",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#233527",
+   "luma": 0.031,
+   "inkDark": false
   },
   {
    "slug": "cat",
    "name": "Cat",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#606375",
+   "luma": 0.127,
+   "inkDark": false
   },
   {
    "slug": "screeming-woman",
    "name": "screeming woman",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#8d6a5d",
+   "luma": 0.168,
+   "inkDark": false
   },
   {
    "slug": "chess",
    "name": "Chess",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#7e8072",
+   "luma": 0.211,
+   "inkDark": true
   },
   {
    "slug": "skateboard-granma",
    "name": "skateboard granma",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#4c5f87",
+   "luma": 0.115,
+   "inkDark": false
   },
   {
    "slug": "pink-spiderman",
    "name": "pink spiderman",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#4c2734",
+   "luma": 0.032,
+   "inkDark": false
   },
   {
    "slug": "grandma-poker",
    "name": "grandma poker",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#5f5a63",
+   "luma": 0.106,
+   "inkDark": false
   },
   {
    "slug": "rich-dog",
    "name": "rich dog",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#454231",
+   "luma": 0.054,
+   "inkDark": false
   },
   {
    "slug": "pink-grandma",
    "name": "pink grandma",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#a0747f",
+   "luma": 0.215,
+   "inkDark": true
   },
   {
    "slug": "john-cena",
    "name": "John Cena",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#6a4e50",
+   "luma": 0.091,
+   "inkDark": false
   },
   {
    "slug": "stay-salty",
    "name": "stay salty",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#ba937c",
+   "luma": 0.328,
+   "inkDark": true
   },
   {
    "slug": "wizard",
    "name": "wizard",
-   "category": "photo"
+   "category": "photo",
+   "ground": "#86765d",
+   "luma": 0.188,
+   "inkDark": true
   },
   {
    "slug": "pink-park",
    "name": "Pink park",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e7c6bd",
+   "luma": 0.611,
+   "inkDark": true
   },
   {
    "slug": "racoons",
    "name": "racoons",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e2e4ea",
+   "luma": 0.776,
+   "inkDark": true
   },
   {
    "slug": "monkeys",
    "name": "Monkeys",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#d6aeb8",
+   "luma": 0.48,
+   "inkDark": true
   },
   {
    "slug": "cane",
    "name": "Cane",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#a83d48",
+   "luma": 0.121,
+   "inkDark": false
   },
   {
    "slug": "bar",
    "name": "Bar",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#243964",
+   "luma": 0.042,
+   "inkDark": false
   },
   {
    "slug": "palm-beach",
    "name": "palm beach",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#b0b4c6",
+   "luma": 0.459,
+   "inkDark": true
   },
   {
    "slug": "rainy-day",
    "name": "rainy day",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#103964",
+   "luma": 0.04,
+   "inkDark": false
   },
   {
    "slug": "shark",
    "name": "shark",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#3879a0",
+   "luma": 0.171,
+   "inkDark": false
   },
   {
    "slug": "pixel-night",
    "name": "pixel night",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#4a2c6f",
+   "luma": 0.044,
+   "inkDark": false
   },
   {
    "slug": "pixel-night-2",
    "name": "pixel night",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#4d3286",
+   "luma": 0.056,
+   "inkDark": false
   },
   {
    "slug": "fish",
    "name": "fish",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f5eae3",
+   "luma": 0.838,
+   "inkDark": true
   },
   {
    "slug": "tan",
    "name": "Tan",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#d4c440",
+   "luma": 0.538,
+   "inkDark": true
   },
   {
    "slug": "riding-horse",
    "name": "riding horse",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#dfc7af",
+   "luma": 0.596,
+   "inkDark": true
   },
   {
    "slug": "zoo",
    "name": "zoo",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#c29c94",
+   "luma": 0.374,
+   "inkDark": true
   },
   {
    "slug": "persian-carpet",
    "name": "persian carpet",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e6e0d4",
+   "luma": 0.749,
+   "inkDark": true
   },
   {
    "slug": "cocktails",
    "name": "cocktails",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f8f6f2",
+   "luma": 0.923,
+   "inkDark": true
   },
   {
    "slug": "surfing",
    "name": "surfing",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#ebf3f7",
+   "luma": 0.885,
+   "inkDark": true
   },
   {
    "slug": "animal",
    "name": "animal",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#cccdce",
+   "luma": 0.61,
+   "inkDark": true
   },
   {
    "slug": "lotus",
    "name": "lotus",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#cca685",
+   "luma": 0.418,
+   "inkDark": true
   },
   {
    "slug": "autumn",
    "name": "autumn",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f1dac8",
+   "luma": 0.73,
+   "inkDark": true
   },
   {
    "slug": "farm",
    "name": "farm",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f4b599",
+   "luma": 0.546,
+   "inkDark": true
   },
   {
    "slug": "flamingo",
    "name": "flamingo",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#efdda9",
+   "luma": 0.729,
+   "inkDark": true
   },
   {
    "slug": "stars-in-the-sea",
    "name": "stars in the sea",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#0a192e",
+   "luma": 0.01,
+   "inkDark": false
   },
   {
    "slug": "skiing",
    "name": "skiing",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e8eef1",
+   "luma": 0.847,
+   "inkDark": true
   },
   {
    "slug": "wall-painting",
    "name": "wall painting",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#bd2d25",
+   "luma": 0.128,
+   "inkDark": false
   },
   {
    "slug": "lizard-mokeys",
    "name": "lizard&mokeys",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#7d221b",
+   "luma": 0.056,
+   "inkDark": false
   },
   {
    "slug": "eros",
    "name": "eros",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#ddd0c5",
+   "luma": 0.645,
+   "inkDark": true
   },
   {
    "slug": "jungle",
    "name": "jungle",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e4e1b8",
+   "luma": 0.738,
+   "inkDark": true
   },
   {
    "slug": "lotus-2",
    "name": "lotus",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#1f1e1b",
+   "luma": 0.013,
+   "inkDark": false
   },
   {
    "slug": "night",
    "name": "night",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#191412",
+   "luma": 0.008,
+   "inkDark": false
   },
   {
    "slug": "vintage-stars",
    "name": "vintage stars",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#1f1e1c",
+   "luma": 0.013,
+   "inkDark": false
   },
   {
    "slug": "yacht",
    "name": "Yacht",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e7f0f4",
+   "luma": 0.858,
+   "inkDark": true
   },
   {
    "slug": "sharp-leaves",
    "name": "sharp leaves",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f6f6f3",
+   "luma": 0.92,
+   "inkDark": true
   },
   {
    "slug": "cooking",
    "name": "cooking",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#edeef2",
+   "luma": 0.856,
+   "inkDark": true
   },
   {
    "slug": "canes",
    "name": "canes",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#2a5536",
+   "luma": 0.073,
+   "inkDark": false
   },
   {
    "slug": "garden",
    "name": "garden",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#87986c",
+   "luma": 0.287,
+   "inkDark": true
   },
   {
    "slug": "sparkle-rabbit",
    "name": "sparkle rabbit",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f1a5ae",
+   "luma": 0.487,
+   "inkDark": true
   },
   {
    "slug": "swimming",
    "name": "swimming",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#0288b4",
+   "luma": 0.209,
+   "inkDark": true
   },
   {
    "slug": "destroyed-summer",
    "name": "destroyed summer",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#add0df",
+   "luma": 0.593,
+   "inkDark": true
   },
   {
    "slug": "beach-scene",
    "name": "beach scene",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#58b8b8",
+   "luma": 0.398,
+   "inkDark": true
   },
   {
    "slug": "baseball",
    "name": "baseball",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#e1e9c9",
+   "luma": 0.785,
+   "inkDark": true
   },
   {
    "slug": "daisy",
    "name": "daisy",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#2a64ab",
+   "luma": 0.125,
+   "inkDark": false
   },
   {
    "slug": "fox",
    "name": "fox",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#f8eed7",
+   "luma": 0.86,
+   "inkDark": true
   },
   {
    "slug": "circus",
    "name": "circus",
-   "category": "illustration"
+   "category": "illustration",
+   "ground": "#eff0ec",
+   "luma": 0.867,
+   "inkDark": true
   }
- ]
+ ],
+ "inkThreshold": 0.1836
 }
