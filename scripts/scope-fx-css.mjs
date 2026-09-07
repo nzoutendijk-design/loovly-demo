@@ -1,10 +1,12 @@
 // Rewrites vendor/loovly-handoff/effects/fx/fx.css so every rule only applies inside `.fx-host`.
-// `:root`, `html` and `body` selectors become `.fx-host` itself (their custom properties still cascade).
+// `:root`, `html` and `body` selectors become `.fx-host` itself and keep only their custom properties.
+// @keyframes / @font-face / @property are copied verbatim; @media / @supports / @container / @layer recurse.
 import { readFileSync, writeFileSync } from 'node:fs'
 
-// comments first: several carry braces and would desync the brace parser below
-const src = readFileSync(new URL('../vendor/loovly-handoff/effects/fx/fx.css', import.meta.url), 'utf8').replace(/^\uFEFF/, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(tailwind|import|charset)[^;]*;/g, '')   // brace-less at-rules would swallow the next selector
 const SCOPE = '.fx-host'
+const raw = readFileSync(new URL('../vendor/loovly-handoff/effects/fx/fx.css', import.meta.url), 'utf8')
+// comments first (several carry braces and would desync the brace parser); brace-less at-rules would swallow the next selector
+const src = raw.replace(/^﻿/, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(tailwind|import|charset)[^;]*;/g, '')
 
 function splitTop(s, ch) {
   const out = []; let depth = 0, cur = ''
@@ -19,28 +21,24 @@ function scopeSelector(sel) {
   return SCOPE + ' ' + sel
 }
 /** html/body/:root rules become the host itself, but only their custom properties may apply — never margins, backgrounds or fonts. */
-function rootBody(body) {
-  return body.split(';').map((d) => d.trim()).filter((d) => d.startsWith('--')).join(';\n  ')
-}
+const rootBody = (body) => body.split(';').map((d) => d.trim()).filter((d) => d.startsWith('--')).join(';\n  ')
+
 function walk(css) {
   let out = '', i = 0
   while (i < css.length) {
     const open = css.indexOf('{', i)
     if (open === -1) { out += css.slice(i); break }
-    const head = css.slice(i, open)
-    // find the matching close brace
+    const h = css.slice(i, open).trim()
     let depth = 1, j = open + 1
     while (j < css.length && depth) { if (css[j] === '{') depth++; else if (css[j] === '}') depth--; j++ }
     const body = css.slice(open + 1, j - 1)
-    const h = head.replace(/^\uFEFF/, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(tailwind|import|charset)[^;]*;/g, '')   // brace-less at-rules would swallow the next selector.trim()
-    const comments = head.match(/\/\*[\s\S]*?\*\//g)?.join('\n') ?? ''
-    if (/^@(media|supports|container|layer)\b/.test(h)) out += comments + '\n' + h + '{' + walk(body) + '}\n'
-    else if (h.startsWith('@')) out += comments + '\n' + h + '{' + body + '}\n'
+    if (/^@(media|supports|container|layer)\b/.test(h)) out += '\n' + h + '{' + walk(body) + '}\n'
+    else if (h.startsWith('@')) out += '\n' + h + '{' + body + '}\n'
     else {
       const sels = splitTop(h, ',')
       const allRooted = sels.every(isRooted)
       const b = allRooted ? rootBody(body) : body
-      if (!allRooted || b) out += comments + '\n' + sels.map(scopeSelector).join(',') + '{' + b + '}\n'
+      if (!allRooted || b) out += '\n' + sels.map(scopeSelector).join(',') + '{' + b + '}\n'
     }
     i = j
   }
