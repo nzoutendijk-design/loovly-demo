@@ -18,7 +18,7 @@ html = html.replace('</head>', () => `<style>${css}</style></head>`) // replacer
 // the LoovlyFX runtime (already scoped) goes inline too
 const fxCss = readFileSync(join(dist, 'fx/fx.css'), 'utf8')
 const fxJs = readFileSync(join(dist, 'fx/fx.js'), 'utf8')
-html = html.replace(/<link rel="stylesheet"[^>]*fx\/fx\.css[^>]*>/, '').replace(/<script src="[^"]*fx\/fx\.js"><\/script>/, '')
+html = html.replace(/<link rel="stylesheet"[^>]*fx\/fx\.css[^>]*>/, '').replace(/<script src="[^"]*fx\/fx\.js[^"]*"><\/script>/, '')
 html = html.replace('</head>', () => `<style>${fxCss}</style></head>`)
 
 // JS, preceded by a map of every image as a data: URI (read by asset() in src/components.tsx)
