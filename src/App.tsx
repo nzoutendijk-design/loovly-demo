@@ -88,7 +88,10 @@ export default function App() {
       <div
         className="stage-box"
         style={{ transform: `scale(${scale})`, width: boxW, height: boxH }}
-        onTouchStart={(e) => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY } }}
+        onTouchStart={(e) => {
+          // touches that start inside a scrollable strip scroll it; they never flip the screen
+          touch.current = (e.target as Element).closest('.chip-strip, .tray-thumbs, .library') ? null : { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        }}
         onTouchEnd={(e) => {
           const t = touch.current; touch.current = null
           if (!t) return

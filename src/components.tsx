@@ -2,7 +2,45 @@
  * Shared UI pieces for the Loovly "Create your card" demo.
  * Every coordinate is in Figma frame units (390 × 845). The stage is scaled by App.
  */
+import { useEffect, useRef } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
+
+/**
+ * Mouse drag-to-scroll for horizontal strips (touch scrolls natively). Accounts for the
+ * CSS scale of the stage and suppresses the click that would otherwise fire after a drag.
+ */
+function useDragScroll() {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    let dragging = false, moved = false, startX = 0, startLeft = 0
+    const scale = () => el.getBoundingClientRect().width / el.offsetWidth || 1
+    const down = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return
+      dragging = true; moved = false; startX = e.clientX; startLeft = el.scrollLeft
+    }
+    const move = (e: PointerEvent) => {
+      if (!dragging) return
+      const dx = (e.clientX - startX) / scale()
+      if (Math.abs(dx) > 4) moved = true
+      el.scrollLeft = startLeft - dx
+    }
+    const up = () => { dragging = false }
+    const click = (e: MouseEvent) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false } }
+    el.addEventListener('pointerdown', down)
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    el.addEventListener('click', click, true)
+    return () => {
+      el.removeEventListener('pointerdown', down)
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      el.removeEventListener('click', click, true)
+    }
+  }, [])
+  return ref
+}
 
 /** Resolves an exported Figma asset. The single-file bundler swaps in data: URIs via window.__INLINE_ASSETS__. */
 declare global { interface Window { __INLINE_ASSETS__?: Record<string, string> } }
@@ -159,12 +197,13 @@ export function HostBar({ onVibe, onAnimations, onSetting, onDone }: { onVibe?: 
 const VIBES = ['vibe-1.jpg', 'vibe-2.jpg', 'vibe-2.jpg', 'vibe-3.jpg', 'vibe-4.jpg', 'vibe-5.jpg', 'vibe-4.jpg']
 
 export function Tray({ label, onThumb }: { label: string; onThumb?: () => void }) {
+  const strip = useDragScroll()
   return (
     <>
       <div className="tray">
         <span className="tray-label">{label}</span>
       </div>
-      <div className="tray-thumbs">
+      <div className="tray-thumbs" ref={strip}>
         {VIBES.map((v, i) => (
           <button className={'thumb' + (i === 0 ? ' on' : '')} key={i} onClick={i === 0 ? onThumb : undefined}>
             <img src={A(v)} alt="" />
@@ -255,8 +294,9 @@ export function TypeField({ value, onClick }: { value: string; onClick?: () => v
 }
 
 export function FontChips() {
+  const strip = useDragScroll()
   return (
-    <div className="chip-strip" style={{ gap: 9.186 }}>
+    <div className="chip-strip" style={{ gap: 9.186 }} ref={strip}>
       {FONTS.map((f, i) => (
         <button className={'font-chip' + (i === 0 ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f}>
           {f}
@@ -267,8 +307,9 @@ export function FontChips() {
 }
 
 export function ColorChips() {
+  const strip = useDragScroll()
   return (
-    <div className="chip-strip" style={{ gap: 10.887 }}>
+    <div className="chip-strip" style={{ gap: 10.887 }} ref={strip}>
       <button className="color-chip picker" aria-label="Pick a colour">
         <img src={A('icon-eyedropper.svg')} alt="" style={{ width: 17.78, height: 17.78 }} />
       </button>

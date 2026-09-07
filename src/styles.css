@@ -83,7 +83,7 @@ p, h1 { margin: 0; }
 /* tray */
 .tray { position: absolute; left: 0; top: 569px; width: 390px; height: 124px; background: rgba(0,0,0,.08); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
 .tray-label { position: absolute; left: 16px; top: 16px; font: 500 12px/15px var(--geist); color: #fff; }
-.tray-thumbs { position: absolute; left: 18px; top: 621px; display: flex; gap: 10.08px; }
+.tray-thumbs { position: absolute; left: 18px; top: 621px; width: 372px; height: 48.96px; display: flex; gap: 10.08px; }
 .thumb { position: relative; width: 48.96px; height: 48.96px; border-radius: 14px; overflow: hidden; flex: none; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .thumb.on::after { content: ''; position: absolute; inset: 0; border-radius: 14px; box-shadow: inset 0 0 0 .84px rgba(255,255,255,.7); }
@@ -107,7 +107,7 @@ p, h1 { margin: 0; }
 .type-field { position: absolute; left: 24px; top: 304px; width: 341px; height: 39px; border-bottom: .925px solid #fff; }
 .type-field span { position: absolute; left: 4px; top: 10.5px; width: 333px; font: 400 14px/18px var(--geist); letter-spacing: .1378px; color: #fff; }
 .name-field { top: 379px; }
-.chip-strip { position: absolute; left: 24px; top: 361px; width: 366px; height: 32px; display: flex; overflow: hidden; }
+.chip-strip { position: absolute; left: 24px; top: 361px; width: 366px; height: 32px; display: flex; }
 .font-chip { flex: none; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 100px; background: rgba(255,255,255,.3); font: 400 12px/15px var(--geist); letter-spacing: .1378px; color: #fff; }
 .font-chip.on { font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
 .color-chip { flex: none; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center; }
@@ -121,8 +121,9 @@ p, h1 { margin: 0; }
 .key-return { position: absolute; left: 295px; top: 207px; width: 92.7px; height: 41px; border-radius: 5px; }
 
 /* ------------------------------------------------------------------ photo library */
-.library { position: absolute; left: 0; top: 56px; width: 390px; height: 861.5px; border-radius: 32px; background: #fff; overflow: hidden; display: flex; flex-direction: column; gap: 8.864px; color: #000; }
-.lib-header { height: 70.9px; flex: none; padding: 0 14.18px; display: flex; align-items: center; justify-content: space-between; }
+.library { position: absolute; left: 0; top: 56px; width: 390px; height: 789px; border-radius: 32px 32px 0 0; background: #fff; overflow-x: hidden; overflow-y: auto; display: flex; flex-direction: column; color: #000; overscroll-behavior: contain; }
+.lib-header { position: sticky; top: 0; z-index: 1; box-sizing: content-box; height: 70.9px; flex: none; padding: 0 14.18px 8.864px; display: flex; align-items: center; justify-content: space-between; background: #fff; }
+.lib-grid { padding-bottom: 24px; }
 .lib-round { width: 42.55px; height: 42.55px; border-radius: 50%; background: #fff; box-shadow: 0 0 18.86px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
 .lib-check { background: #309eff; box-shadow: 0 0 21.27px rgba(0,0,0,.12); }
 .lib-seg { display: flex; gap: 7.09px; padding: 3.55px; border-radius: 886px; background: #fff; box-shadow: 0 0 18.86px rgba(0,0,0,.12); }
@@ -212,3 +213,11 @@ button:disabled { cursor: default; }
 .lib-cell:active img { filter: brightness(.78); transform: scale(.97); }
 .type-field:active { background: rgba(255,255,255,.09); }
 .key-return:active { background: rgba(0,0,0,.16); }
+
+/* ------------------------------------------------------------------ scrollable strips
+   Figma clips these at the frame edge; in the app they scroll (touch natively, mouse by dragging). */
+.chip-strip, .tray-thumbs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.chip-strip::-webkit-scrollbar, .tray-thumbs::-webkit-scrollbar, .library::-webkit-scrollbar { display: none; }
+.library { scrollbar-width: none; }
+.chip-strip::after, .tray-thumbs::after { content: ''; flex: none; width: 24px; }   /* trailing breathing room */
+.tray-thumbs::after { width: 18px; }

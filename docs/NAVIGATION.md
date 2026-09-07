@@ -37,5 +37,7 @@ Deep-link to any screen with `#n`, e.g. `…/#16` opens the calendar.
   occasion sheet. Reproduced as designed; probably intended to read “Who is this card for?”.
 - Screens 10–11 are the only photo-card screens without the “happy birthday” caption on the card
   (it is under the sheet and blurred, so this is barely visible). Reproduced as designed.
+- The font/colour strips, the vibe/animation tray and the photo library scroll (the frames clip
+  them at the edge). Scrolling never triggers the screen-swipe gesture.
 - The iOS keyboard is the Figma **Keyboard – iPhone** component exported at 3×, since it is a
   system component and SF Pro isn’t available outside Apple platforms.
