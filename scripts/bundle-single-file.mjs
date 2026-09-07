@@ -8,11 +8,11 @@ const dataUri = (file) => `data:${mime[extname(file)]};base64,${readFileSync(fil
 
 let html = readFileSync(join(dist, 'index.html'), 'utf8')
 
-// CSS (with fonts inlined)
-let css = readFileSync(join(dist, 'fonts/fonts.css'), 'utf8')
-css = css.replace(/url\('([^'/]+\.woff2)'\)/g, (_, f) => `url('${dataUri(join(dist, 'fonts', f))}')`)
+// CSS (with the woff2 fonts inlined)
+let css = ''
 for (const f of readdirSync(join(dist, 'assets')).filter((f) => f.endsWith('.css'))) css += readFileSync(join(dist, 'assets', f), 'utf8')
-html = html.replace(/<link rel="stylesheet"[^>]*fonts\/fonts\.css[^>]*>/, '').replace(/<link rel="stylesheet"[^>]*assets\/[^>]*\.css[^>]*>/, '')
+css = css.replace(/url\((["']?)([^)"']*?([^/)"']+\.woff2))\1\)/g, (_, __, ___, f) => `url('${dataUri(join(dist, 'fonts', f))}')`)
+html = html.replace(/<link rel="stylesheet"[^>]*assets\/[^>]*\.css[^>]*>/, '')
 html = html.replace('</head>', () => `<style>${css}</style></head>`) // replacer fn: '$&' etc. in the payload must stay literal
 
 // JS, preceded by a map of every image as a data: URI (read by asset() in src/components.tsx)

@@ -74,7 +74,7 @@ src/
   styles.css       all styling, in Figma frame units
 public/
   assets/          exported Figma assets
-  fonts/           Geist + Caveat (woff2)
+  fonts/           Geist + Caveat (woff2; @font-face lives in src/styles.css)
 docs/
   NAVIGATION.md    screen-by-screen flow and hotspot map
 scripts/
