@@ -67,6 +67,13 @@ export default function App() {
     return () => ro.disconnect()
   }, [])
 
+  // iOS Safari only applies :active (pressed) styles when a touchstart listener is present
+  useEffect(() => {
+    const noop = () => {}
+    document.addEventListener('touchstart', noop, { passive: true })
+    return () => document.removeEventListener('touchstart', noop)
+  }, [])
+
   // warm the image cache so screen changes don't flash
   useEffect(() => {
     ASSETS.forEach((a) => { const i = new Image(); i.src = asset(a) })

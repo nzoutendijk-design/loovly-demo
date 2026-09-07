@@ -56,6 +56,10 @@ it full-screen (no Safari chrome, status-bar-safe), which is the closest match t
 | ← / → keys (desktop) | previous / next |
 | `#n` in the URL | jump straight to screen *n* (1–22) |
 
+Every control has a hover state (pointer devices) and a pressed state (all devices). The Figma file
+defines neither, so they follow its glass style: lighter fill and brighter stroke on hover, a 95 % scale
+and lighter fill while pressed.
+
 On a desktop browser the app renders inside an iPhone bezel with a caption showing the current
 screen, its name and what to tap.
 

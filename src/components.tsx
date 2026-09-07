@@ -28,8 +28,10 @@ export function Nav() {
   return (
     <div className="nav">
       <img className="nav-logo" src={A('logo-loovly.svg')} alt="loovly" />
-      <span className="burger b1" />
-      <span className="burger b2" />
+      <button className="burger-btn" aria-label="Menu">
+        <span className="burger b1" />
+        <span className="burger b2" />
+      </button>
     </div>
   )
 }
@@ -256,9 +258,9 @@ export function FontChips() {
   return (
     <div className="chip-strip" style={{ gap: 9.186 }}>
       {FONTS.map((f, i) => (
-        <span className={'font-chip' + (i === 0 ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f}>
+        <button className={'font-chip' + (i === 0 ? ' on' : '')} style={{ width: i === 0 ? 93.01 : 97 }} key={f}>
           {f}
-        </span>
+        </button>
       ))}
     </div>
   )
@@ -267,13 +269,13 @@ export function FontChips() {
 export function ColorChips() {
   return (
     <div className="chip-strip" style={{ gap: 10.887 }}>
-      <span className="color-chip picker">
+      <button className="color-chip picker" aria-label="Pick a colour">
         <img src={A('icon-eyedropper.svg')} alt="" style={{ width: 17.78, height: 17.78 }} />
-      </span>
+      </button>
       {COLORS.map((c, i) => (
-        <span className="color-chip" key={i}>
+        <button className="color-chip" key={i} aria-label={c}>
           <i style={{ background: c, width: i === 3 ? 23.7 : 24.89 }} />
-        </span>
+        </button>
       ))}
     </div>
   )
@@ -324,8 +326,8 @@ export function PhotoLibrary({ selected, onClose, onPhoto, onConfirm }: { select
           </svg>
         </button>
         <div className="lib-seg">
-          <span className="lib-seg-on">Photos</span>
-          <span className="lib-seg-off">Albums</span>
+          <button className="lib-seg-on">Photos</button>
+          <button className="lib-seg-off">Albums</button>
         </div>
         <button className="lib-round lib-check" onClick={onConfirm} aria-label="Confirm">
           <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
